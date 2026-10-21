@@ -1,0 +1,18 @@
+{
+  "name": "workerd-compute-bench",
+  "version": "1.0.0",
+  "description": "Equivalent JavaScript and Rust/Wasm compute services benchmarked in local workerd",
+  "scripts": {
+    "build": "bash scripts/build.sh",
+    "test": "node scripts/test.mjs",
+    "bench": "node scripts/bench.mjs",
+    "serve": "bash scripts/workerd.sh serve build/js-optimized.capnp"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "workerd": "1.20261021.1"
+  }
+}

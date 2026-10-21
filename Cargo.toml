@@ -1,0 +1,23 @@
+[package]
+name = "compute"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+path = "rust/lib.rs"
+crate-type = ["cdylib"]
+
+[features]
+simd = []
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.small]
+inherits = "release"
+opt-level = "z"
