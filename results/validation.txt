@@ -3,7 +3,7 @@
 > node scripts/test-order.mjs && node scripts/test.mjs && node scripts/test-node.mjs
 
 Benchmark order: counterbalanced positions for 2, 4 and 19 entrants passed
-66 oracle cases × 19 engines passed
+66 oracle cases × 21 engines passed
 js-baseline: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
 js-scalar: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
 js-optimized: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
@@ -25,5 +25,8 @@ rust-unroll-o3: HTTP, origin, concurrency, admission, chunked bodies, maximum im
 rust-chunked: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
 js-fixed: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
 js-split: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
-js-split: Node adapter parity passed
+js-phased: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
+js-flat: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
+js-primed: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
+js-flat: Node adapter parity passed
 rust-manual-o3: Node adapter parity passed

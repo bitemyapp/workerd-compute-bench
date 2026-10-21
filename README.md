@@ -22,7 +22,7 @@ The locked Nix shell supplies Node 24, Binaryen, Rustup, and a glibc loader for 
 For less scheduler noise on Linux, pin the client and server to different physical cores:
 
 ```sh
-BENCH_CPU=2 VARIANTS=js-split,rust-manual-o3 \
+BENCH_CPU=2 VARIANTS=js-flat,rust-manual-o3 \
   ROUNDS=5 SECONDS=1.5 SAMPLES=120 \
   OUTPUT=results/my-run.json taskset -c 0 npm run bench
 ```
@@ -34,7 +34,7 @@ Run either service yourself:
 ```sh
 npm run serve
 # Or: bash scripts/workerd.sh serve build/rust-manual-o3.capnp
-# Or, outside the comparison: VARIANT=js-split node scripts/node-server.mjs
+# Or, outside the comparison: VARIANT=js-flat node scripts/node-server.mjs
 ```
 
 With a service running, `node scripts/example.mjs image` writes an input image and its edge mask as PGM files in `build/`; `node scripts/example.mjs search` prints actual ranked matches and scores.
@@ -80,7 +80,7 @@ JavaScript experiments include a scalar dot loop, four accumulators, 16-wide unr
 To inspect a CPU profile in Chrome DevTools:
 
 ```sh
-node scripts/profile.mjs js-split '/search?n=32768&d=128&q=8&k=10'
+node scripts/profile.mjs js-flat '/search?n=32768&d=128&q=8&k=10'
 node scripts/profile.mjs rust-manual-o3 '/image?w=1024&h=1024'
 ```
 
@@ -97,7 +97,7 @@ BENCH_CPU=2 ROUNDS=3 SAMPLES=120 SECONDS=1.2 WARMUPS=80 WARMUP_SECONDS=1 \
   CONCURRENCY=4 CASES=image-1024,search-large,image-io \
   OUTPUT=results/final-concurrency4.json taskset -c 0 npm run bench
 BENCH_CPU=2 ROUNDS=3 SAMPLES=60 SECONDS=0.75 WARMUPS=50 WARMUP_SECONDS=0.75 \
-  VARIANTS=js-baseline,js-split,rust-baseline,rust-manual-o3 CASES=image-1024,search-large \
+  VARIANTS=js-baseline,js-flat,rust-baseline,rust-manual-o3 CASES=image-1024,search-large \
   OUTPUT=results/final-baselines.json taskset -c 0 npm run bench
 npm run report
 ```

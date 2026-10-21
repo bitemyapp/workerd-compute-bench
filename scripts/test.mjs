@@ -4,6 +4,8 @@ import {request} from 'node:http';
 import {createKernels} from '../js/kernels.js';
 import {createFastKernels} from '../js/kernels-fast.js';
 import {createSplitKernels} from '../js/kernels-split.js';
+import {search as phasedSearch} from '../js/vector-phased.js';
+import {createFlatKernels} from '../js/kernels-flat.js';
 import {wasmKernels} from '../js/wasm-kernels.js';
 import {fixture} from './fixtures.mjs';
 import {variants} from './config.mjs';
@@ -72,6 +74,8 @@ const engines=['baseline','scalar','optimized','linear','unrolled','specialized'
 engines.push(['fast',createFastKernels()]);
 engines.push(['fixed',createFastKernels(true)]);
 engines.push(['split',createSplitKernels()]);
+engines.push(['phased',{...createSplitKernels(),search:phasedSearch}]);
+engines.push(['flat',createFlatKernels()]);
 for(const v of ['scalar','simd','small','simd-o3','simd-oz','manual','manual-o3','unroll','unroll-o3']) {
   const module=new WebAssembly.Module(readFileSync(`build/${v}.wasm`));
   engines.push([`wasm-${v}`,wasmKernels(module)]);

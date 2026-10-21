@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {call,agent} from './runtime.mjs';
 import {fixture} from './fixtures.mjs';
 import {createKernels} from '../js/kernels.js';
-for(const variant of ['js-split','rust-manual-o3']) {
+for(const variant of ['js-flat','rust-manual-o3']) {
   const child=spawn(process.execPath,['scripts/node-server.mjs'],{env:{...process.env,VARIANT:variant},stdio:['ignore','pipe','pipe']});
   let log='';child.stderr.on('data',c=>log+=c);child.stdout.on('data',()=>{});
   try {

@@ -1,6 +1,6 @@
 import {spawn,execFileSync} from 'node:child_process';
 import {request,Agent,createServer} from 'node:http';
-import {readFileSync} from 'node:fs';
+import {readFileSync,writeFileSync} from 'node:fs';
 import {once} from 'node:events';
 import {fixture} from './fixtures.mjs';
 export const agent=new Agent({keepAlive:true,maxSockets:4});
@@ -17,6 +17,10 @@ export function call(path,bytes,method='POST') {
 }
 export async function start(variant) {
   const args=['scripts/workerd.sh','serve',`build/${variant}.capnp`];
+  if(process.env.TRACE_JIT) {
+    const config=readFileSync(args[2],'utf8').replace('const config :Workerd.Config = (','const config :Workerd.Config = (\n v8Flags = ["--trace-opt", "--trace-deopt"],');
+    args[2]=`build/trace-${variant}.capnp`;writeFileSync(args[2],config);
+  }
   if(process.env.PROFILE) args.push('--inspector-addr','127.0.0.1:9229');
   const child=process.env.BENCH_CPU ? spawn('taskset',['-c',process.env.BENCH_CPU,'bash',...args],{stdio:['ignore','pipe','pipe']}) : spawn('bash',args,{stdio:['ignore','pipe','pipe']});
   let log=''; child.stdout.on('data',c=>log+=c); child.stderr.on('data',c=>log+=c);

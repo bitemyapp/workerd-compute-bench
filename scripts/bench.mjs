@@ -11,7 +11,7 @@ import {call,start,origin,agent,procStats,clockTicks} from './runtime.mjs';
 import {verifyBuild} from './build-manifest.mjs';
 import {roundOrder} from './order.mjs';
 
-const selected=(process.env.VARIANTS??'js-split,rust-manual-o3').split(',');
+const selected=(process.env.VARIANTS??'js-flat,rust-manual-o3').split(',');
 const chosen=cases.filter(c=>!process.env.CASES||process.env.CASES.split(',').includes(c.name));
 const rounds=Number(process.env.ROUNDS??3), minSamples=Number(process.env.SAMPLES??80);
 const seconds=Number(process.env.SECONDS??1), concurrency=Number(process.env.CONCURRENCY??1);
@@ -23,7 +23,7 @@ assert(Number.isInteger(warmups)&&warmups>0&&warmupSeconds>=0);
 const hash=b=>createHash('sha256').update(b).digest('hex');
 function command(cmd,args=[]) {try{return execFileSync(cmd,args,{encoding:'utf8'}).trim();}catch{return null;}}
 function file(path){try{return readFileSync(path,'utf8').trim();}catch{return null;}}
-const meta={build:verifyBuild(),date:new Date().toISOString(),node:process.version,rust:command('rustc',['--version']),
+const meta={diagnosticTrace:!!process.env.TRACE_JIT,build:verifyBuild(),date:new Date().toISOString(),node:process.version,rust:command('rustc',['--version']),
   workerd:command('bash',['scripts/workerd.sh','--version']),binaryen:command('wasm-opt',['--version']),
   kernel:os.release(),platform:os.platform(),arch:os.arch(),cpu:os.cpus().map(c=>({model:c.model,mhz:c.speed})),
   lscpu:command('lscpu',['-J']),loadStart:os.loadavg(),serverCPU:process.env.BENCH_CPU??null,
