@@ -9,6 +9,7 @@ import {cases,fixture} from './fixtures.mjs';
 import {variants} from './config.mjs';
 import {call,start,origin,agent,procStats,clockTicks} from './runtime.mjs';
 import {verifyBuild} from './build-manifest.mjs';
+import {roundOrder} from './order.mjs';
 
 const selected=(process.env.VARIANTS??'js-fast,rust-manual-o3').split(',');
 const chosen=cases.filter(c=>!process.env.CASES||process.env.CASES.split(',').includes(c.name));
@@ -53,8 +54,7 @@ async function invoke(c,index) {
 try {
   for(let round=0;round<rounds;round++) {
     // Deterministic rotations/reversals reduce fixed-order thermal bias.
-    const order=selected.slice(round%selected.length).concat(selected.slice(0,round%selected.length));
-    if(round%2)order.reverse();
+    const order=roundOrder(selected,round);
     for(const variant of order) {
       const runtime=await start(variant);
       try {

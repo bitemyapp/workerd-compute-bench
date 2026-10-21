@@ -4,7 +4,7 @@
   "description": "Equivalent JavaScript and Rust/Wasm compute services benchmarked in local workerd",
   "scripts": {
     "build": "bash scripts/build.sh",
-    "test": "node scripts/test.mjs && node scripts/test-node.mjs",
+    "test": "node scripts/test-order.mjs && node scripts/test.mjs && node scripts/test-node.mjs",
     "bench": "node scripts/bench.mjs",
     "serve": "bash scripts/workerd.sh serve build/js-fast.capnp",
     "serve:rust": "bash scripts/workerd.sh serve build/rust-manual-o3.capnp",

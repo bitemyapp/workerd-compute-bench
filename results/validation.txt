@@ -24,3 +24,4 @@ rust-unroll-o3: HTTP, origin, concurrency, admission, chunked bodies, maximum im
 rust-chunked: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
 js-fast: Node adapter parity passed
 rust-manual-o3: Node adapter parity passed
+Benchmark order: counterbalanced positions for 2, 4 and 19 entrants passed
