@@ -9,7 +9,11 @@
     "serve": "bash scripts/workerd.sh serve build/js-flat.capnp",
     "serve:rust": "bash scripts/workerd.sh serve build/rust-manual-o3.capnp",
     "start:node": "node scripts/node-server.mjs",
-    "report": "node scripts/report.mjs"
+    "report": "node scripts/report.mjs",
+    "build:io": "bash scripts/io-build.sh",
+    "test:io": "bash scripts/io-run.sh scripts/io-test.mjs",
+    "bench:io": "bash scripts/io-run.sh scripts/io-bench.mjs",
+    "report:io": "node scripts/io-report.mjs"
   },
   "keywords": [],
   "author": "",

@@ -1,0 +1,4 @@
+js-io: oracle, streaming, boundaries, 128 concurrent distinct requests, failures, body-size errors, memory admission, 512-client overload and recovery passed; origin peak 384
+rust-io: oracle, streaming, boundaries, 128 concurrent distinct requests, failures, body-size errors, memory admission, 512-client overload and recovery passed; origin peak 384
+tokio-current: oracle, streaming, boundaries, 128 concurrent distinct requests, failures, body-size errors, memory admission, 512-client overload and recovery passed; origin peak 384
+tokio-multi: oracle, streaming, boundaries, 128 concurrent distinct requests, failures, body-size errors, memory admission, 512-client overload and recovery passed; origin peak 384

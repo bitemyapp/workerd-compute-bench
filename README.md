@@ -2,7 +2,9 @@
 
 Equivalent JavaScript and Rust/Wasm services for image processing and exact vector search, with correctness tests, measured optimization experiments, and an external HTTP benchmark. See [RESULTS.md](RESULTS.md) for measurements and [results/](results/) for raw samples.
 
-The JavaScript application runs unchanged in workerd or the supplied Node adapter. The comparison runs **both applications inside workerd**, with Rust compiled to `wasm32-unknown-unknown`. Node runs the load generator; it is not the measured JavaScript server. Rust uses a thin shared JavaScript HTTP shell and a dependency-free Wasm compute core. This repository does not benchmark native Rust or geographically distributed Cloudflare deployment.
+The JavaScript compute application runs unchanged in workerd or the supplied Node adapter. The compute comparison runs **both applications inside workerd**, with Rust compiled to `wasm32-unknown-unknown`. Node runs the load generator; it is not the measured JavaScript server. Rust uses a thin shared JavaScript HTTP shell and a dependency-free Wasm compute core. No geographically distributed Cloudflare deployment is measured.
+
+The separate [I/O concurrency suite](io/README.md) compares JavaScript and async Rust/Wasm inside workerd, plus explicitly labeled native Tokio current-thread and two-thread servers. Rust uses Tokio semaphores inside the Wasm application; workerd supplies the event loop and HTTP I/O. See [IO-RESULTS.md](IO-RESULTS.md) for throughput scaling and fixed-arrival-rate overload measurements.
 
 ## Reproduce
 

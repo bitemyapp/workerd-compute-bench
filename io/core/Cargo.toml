@@ -1,0 +1,9 @@
+[package]
+name = "io-core"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+tokio.workspace = true
+futures-util.workspace = true
