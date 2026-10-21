@@ -22,7 +22,7 @@ The locked Nix shell supplies Node 24, Binaryen, Rustup, and a glibc loader for 
 For less scheduler noise on Linux, pin the client and server to different physical cores:
 
 ```sh
-BENCH_CPU=2 VARIANTS=js-fast,rust-manual-o3 \
+BENCH_CPU=2 VARIANTS=js-split,rust-manual-o3 \
   ROUNDS=5 SECONDS=1.5 SAMPLES=120 \
   OUTPUT=results/my-run.json taskset -c 0 npm run bench
 ```
@@ -34,8 +34,10 @@ Run either service yourself:
 ```sh
 npm run serve
 # Or: bash scripts/workerd.sh serve build/rust-manual-o3.capnp
-# Or, outside the comparison: VARIANT=js-fast node scripts/node-server.mjs
+# Or, outside the comparison: VARIANT=js-split node scripts/node-server.mjs
 ```
+
+With a service running, `node scripts/example.mjs image` writes an input image and its edge mask as PGM files in `build/`; `node scripts/example.mjs search` prints actual ranked matches and scores.
 
 ## Services and binary protocol
 
@@ -65,6 +67,8 @@ The fixed Rust arena reserves 24 MiB; the linked memory maximum is 32 MiB. No me
 
 The optimized reader uses Workers' BYOB `readAtLeast` extension with a buffer one byte larger than the expected body. That both detects extra bytes and avoids the overhead of receiving/copying every small chunk in JavaScript. A bounded default-reader fallback supports the Node adapter. The `*-chunked` variants retain the previous reader for an apples-to-apples experiment.
 
+The final comparison uses a tested order scheduler that balances each entrant's position over pairs of rounds. Earlier tuning had a rotation/reversal combination that kept two-entrant experiments in fixed order. An audit caught this before the published final runs; `incomplete-order-run.json` is the interrupted run and is excluded from the final report. Early tuning is exploratory evidence, not the final comparison.
+
 Cold measurements are deliberately named `processStartupMs` (launch through first health response) and `firstInvocationMs` (first use of that case in a process). They are **not** hosted isolate cold starts. All correctness and benchmark execution is local. Do not derive cloud bills, global latency, or native-server comparisons from these results.
 
 ## Optimization experiments
@@ -76,11 +80,27 @@ JavaScript experiments include a scalar dot loop, four accumulators, 16-wide unr
 To inspect a CPU profile in Chrome DevTools:
 
 ```sh
-node scripts/profile.mjs js-fast '/search?n=32768&d=128&q=8&k=10'
+node scripts/profile.mjs js-split '/search?n=32768&d=128&q=8&k=10'
 node scripts/profile.mjs rust-manual-o3 '/image?w=1024&h=1024'
 ```
 
 Profiles go in `results/profiles/`. Inspector/profiling is disabled during all benchmark runs. Profile results include instrumentation overhead and are diagnostic only.
+
+## Regenerate the published comparison
+
+After building and testing, run the following inside the Nix shell on the recorded machine. They intentionally overwrite the three final JSON artifacts and regenerate `RESULTS.md`. On another system, choose appropriate CPU IDs or remove affinity settings. The default `npm run bench` instead writes `results/benchmark.json`, leaving the published evidence intact.
+
+```sh
+BENCH_CPU=2 ROUNDS=5 SAMPLES=120 SECONDS=1.2 WARMUPS=80 WARMUP_SECONDS=1 \
+  OUTPUT=results/final-sequential.json taskset -c 0 npm run bench
+BENCH_CPU=2 ROUNDS=3 SAMPLES=120 SECONDS=1.2 WARMUPS=80 WARMUP_SECONDS=1 \
+  CONCURRENCY=4 CASES=image-1024,search-large,image-io \
+  OUTPUT=results/final-concurrency4.json taskset -c 0 npm run bench
+BENCH_CPU=2 ROUNDS=3 SAMPLES=60 SECONDS=0.75 WARMUPS=50 WARMUP_SECONDS=0.75 \
+  VARIANTS=js-baseline,js-split,rust-baseline,rust-manual-o3 CASES=image-1024,search-large \
+  OUTPUT=results/final-baselines.json taskset -c 0 npm run bench
+npm run report
+```
 
 ## Runtime references
 

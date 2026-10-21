@@ -1,8 +1,9 @@
 
 > workerd-compute-bench@1.0.0 test
-> node scripts/test.mjs && node scripts/test-node.mjs
+> node scripts/test-order.mjs && node scripts/test.mjs && node scripts/test-node.mjs
 
-66 oracle cases × 17 engines passed
+Benchmark order: counterbalanced positions for 2, 4 and 19 entrants passed
+66 oracle cases × 19 engines passed
 js-baseline: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
 js-scalar: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
 js-optimized: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
@@ -22,6 +23,7 @@ rust-manual-o3: HTTP, origin, concurrency, admission, chunked bodies, maximum im
 rust-unroll: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
 rust-unroll-o3: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
 rust-chunked: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
-js-fast: Node adapter parity passed
+js-fixed: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
+js-split: HTTP, origin, concurrency, admission, chunked bodies, maximum image/search passed
+js-split: Node adapter parity passed
 rust-manual-o3: Node adapter parity passed
-Benchmark order: counterbalanced positions for 2, 4 and 19 entrants passed

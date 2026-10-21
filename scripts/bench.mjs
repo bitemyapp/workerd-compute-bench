@@ -11,7 +11,7 @@ import {call,start,origin,agent,procStats,clockTicks} from './runtime.mjs';
 import {verifyBuild} from './build-manifest.mjs';
 import {roundOrder} from './order.mjs';
 
-const selected=(process.env.VARIANTS??'js-fast,rust-manual-o3').split(',');
+const selected=(process.env.VARIANTS??'js-split,rust-manual-o3').split(',');
 const chosen=cases.filter(c=>!process.env.CASES||process.env.CASES.split(',').includes(c.name));
 const rounds=Number(process.env.ROUNDS??3), minSamples=Number(process.env.SAMPLES??80);
 const seconds=Number(process.env.SECONDS??1), concurrency=Number(process.env.CONCURRENCY??1);

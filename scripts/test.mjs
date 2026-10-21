@@ -3,6 +3,7 @@ import {readFileSync} from 'node:fs';
 import {request} from 'node:http';
 import {createKernels} from '../js/kernels.js';
 import {createFastKernels} from '../js/kernels-fast.js';
+import {createSplitKernels} from '../js/kernels-split.js';
 import {wasmKernels} from '../js/wasm-kernels.js';
 import {fixture} from './fixtures.mjs';
 import {variants} from './config.mjs';
@@ -69,6 +70,8 @@ function oracle(s,bytes) {
 }
 const engines=['baseline','scalar','optimized','linear','unrolled','specialized'].map(v=>[v,createKernels(v)]);
 engines.push(['fast',createFastKernels()]);
+engines.push(['fixed',createFastKernels(true)]);
+engines.push(['split',createSplitKernels()]);
 for(const v of ['scalar','simd','small','simd-o3','simd-oz','manual','manual-o3','unroll','unroll-o3']) {
   const module=new WebAssembly.Module(readFileSync(`build/${v}.wasm`));
   engines.push([`wasm-${v}`,wasmKernels(module)]);

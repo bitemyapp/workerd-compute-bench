@@ -1,5 +1,6 @@
 import {mkdirSync,writeFileSync} from 'node:fs';
 export const variants = ['js-baseline','js-scalar','js-optimized','js-linear','js-fast','js-unrolled','js-specialized','js-chunked','rust-baseline','rust-scalar','rust-simd','rust-small','rust-simd-o3','rust-simd-oz','rust-manual','rust-manual-o3','rust-unroll','rust-unroll-o3','rust-chunked'];
+variants.push('js-fixed','js-split');
 mkdirSync('build',{recursive:true});
 for (const variant of variants) {
   const rust=variant.startsWith('rust-');
@@ -11,6 +12,8 @@ for (const variant of variants) {
   // Imports resolve relative to the entry module name.
   modules[0][0]=`js/${rust?'rust-worker':'worker'}.js`;
   if(mode==='fast') modules.splice(0,modules.length,['js/fast-worker.js','fast-worker.js'],['js/http.js','http.js'],['js/kernels-fast.js','kernels-fast.js']);
+  if(mode==='fixed') modules.splice(0,modules.length,['js/fixed-worker.js','fixed-worker.js'],['js/http.js','http.js'],['js/kernels-fast.js','kernels-fast.js']);
+  if(mode==='split') modules.splice(0,modules.length,['js/split-worker.js','split-worker.js'],['js/http.js','http.js'],['js/kernels-fast.js','kernels-fast.js'],['js/kernels-split.js','kernels-split.js']);
   writeFileSync(`build/${variant}.capnp`, `using Workerd = import "/workerd/workerd.capnp";
 const config :Workerd.Config = (
  services = [(name = "app", worker = (

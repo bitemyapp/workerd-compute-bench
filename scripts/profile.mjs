@@ -2,7 +2,7 @@ import {writeFileSync,mkdirSync} from 'node:fs';
 import {start,call,agent} from './runtime.mjs';
 import {fixture} from './fixtures.mjs';
 process.env.PROFILE='1';
-const variant=process.argv[2]??'js-fast',path=process.argv[3]??'/search?n=32768&d=128&q=8&k=10';
+const variant=process.argv[2]??'js-split',path=process.argv[3]??'/search?n=32768&d=128&q=8&k=10';
 const runtime=await start(variant);
 let ws;
 try {

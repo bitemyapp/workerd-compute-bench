@@ -6,7 +6,7 @@
     "build": "bash scripts/build.sh",
     "test": "node scripts/test-order.mjs && node scripts/test.mjs && node scripts/test-node.mjs",
     "bench": "node scripts/bench.mjs",
-    "serve": "bash scripts/workerd.sh serve build/js-fast.capnp",
+    "serve": "bash scripts/workerd.sh serve build/js-split.capnp",
     "serve:rust": "bash scripts/workerd.sh serve build/rust-manual-o3.capnp",
     "start:node": "node scripts/node-server.mjs",
     "report": "node scripts/report.mjs"

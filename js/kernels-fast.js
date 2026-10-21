@@ -1,7 +1,7 @@
 // Production kernels kept separate from experimental branches so V8 sees small,
 // monomorphic hot functions. All arithmetic is exact within signed 32-bit range.
-export function createFastKernels() {
-  let scratch=new Uint16Array(0),blur=new Uint8Array(0);
+export function createFastKernels(fixed=false) {
+  let scratch=new Uint16Array(fixed?2048*2048:0),blur=new Uint8Array(fixed?2048*2048:0);
   function image(a,w,h) {
     const n=w*h;
     if(scratch.length<n){scratch=new Uint16Array(n);blur=new Uint8Array(n);}
