@@ -1,0 +1,296 @@
+{
+  "meta": {
+    "diagnosticTrace": false,
+    "build": {
+      "rustc": "rustc 1.99.0 (b940084d7 2026-09-28)",
+      "sources": {
+        "Cargo.toml": "04bf4d7023209d7007018a7d7cf8eee045e9c30d1f55a51f4ef29bdf41af979b",
+        "Cargo.lock": "781c8d4863f8da77a11cc5a8f1e3fa90eb8dba7b75c6b799ef20fed2319fb426",
+        "rust-toolchain.toml": "d30dfd45f6ee9ef9f90db627260edb5c36434131e0b1964177cd25c9325ca225",
+        "rust/lib.rs": "1383357b3f9faa04756e1c10497bd23a0ca9bb11acfd9fe746a433ebfdb351c5",
+        "scripts/build.sh": "827983f500539bbf2197069e3edbd94fae210c3e0b1c0cc12ae37fbae99d7aa2"
+      },
+      "artifacts": {
+        "build/manual-o3.wasm": "cf7bfc97ce61389a51d2233373522deb55bc3117f3167d63c202a0f0bdd0a104",
+        "build/manual.wasm": "65a58ab0f41f9da977133d840e0d7db2c5736c2432e0df5747a0b23827a4aeeb",
+        "build/scalar.wasm": "5f736190b80c5d390a0aa591239ac1bb4b96e78c06a224c58515cb652df4c719",
+        "build/simd-o3.wasm": "6bf212358a6feadd2be073c351bcb666ea46138e16862c886e2e1fd77d00d0c7",
+        "build/simd-oz.wasm": "ef1d211d5eb0109c65f2ececf323535da08886cf4fe2d5638d5c6ed801f88a1e",
+        "build/simd.wasm": "3a1e1e67ca957199fc1fad862c1928c99687f6356cd44b181e4c102255d8095e",
+        "build/small.wasm": "28808c1a05aee4acb05d83a355725037c4ba758af1dd28974873da31c62de222",
+        "build/unroll-o3.wasm": "7a1a89ec61837c185a1c4606a55d62df193f240a9829ba0727847b4a77d395c3",
+        "build/unroll.wasm": "cc897a003ded31065ce026409b535ade57349072bc0158d41106fdeb0e0b3f08"
+      }
+    },
+    "date": "2026-10-21T08:56:16.016Z",
+    "node": "v24.21.0",
+    "rust": "rustc 1.99.0 (b940084d7 2026-09-28)",
+    "workerd": "workerd 2026-10-21",
+    "binaryen": "wasm-opt version 132",
+    "kernel": "7.2.10",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": [
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 4436
+      },
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 4485
+      },
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 4464
+      },
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 400
+      },
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 400
+      },
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 399
+      },
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 399
+      },
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 399
+      }
+    ],
+    "lscpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"46 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"8\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-7\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"GenuineIntel\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"Intel(R) Core(TM) Ultra 7 365\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"6\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"204\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"8\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"3\"\n      },{\n         \"field\": \"Microcode version:\",\n         \"data\": \"0x11c\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"46%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"4900.0000\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"400.0000\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"6835.20\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdt_a rdseed adx smap clflushopt clwb intel_pt sha_ni xsaveopt xsavec xgetbv1 xsaves split_lock_detect user_shstk avx_vnni lass fred lam wbnoinvd dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp hwp_pkg_req hfi vnmi umip pku ospke waitpkg gfni vaes vpclmulqdq rdpid bus_lock_detect movdiri movdir64b fsrm md_clear serialize pconfig arch_lbr ibt flush_l1d arch_capabilities\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"VT-x\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"320 KiB (8 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"512 KiB (8 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"16 MiB (5 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"12 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-7\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS Not affected; BHI BHI_DIS_S\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Not affected\"\n      }\n   ]\n}",
+    "loadStart": [
+      8.44,
+      6.76,
+      5.21
+    ],
+    "serverCPU": "2,3",
+    "clientAffinity": "pid 665796's current affinity list: 0",
+    "clockTicks": 100,
+    "clientScheduler": "pid 665796's current scheduling policy: SCHED_OTHER\npid 665796's current scheduling priority: 0\npid 665796's current runtime parameter: 2800000",
+    "requireNormalScheduler": true,
+    "clientExecutable": "/nix/store/h4wfwic161kxrr74jlzla5lsm28hgary-glibc-2.44-25/lib/ld-linux-x86-64.so.2",
+    "nodeLoader": "/nix/store/h4wfwic161kxrr74jlzla5lsm28hgary-glibc-2.44-25/lib/ld-linux-x86-64.so.2",
+    "governor": "powersave",
+    "git": "a7701addabf8c6dbc6cb0406236288d07a918a21",
+    "gitStatus": "M README.md\n M package.json\n M scripts/bench.mjs\n M scripts/report.mjs\n M scripts/runtime.mjs\n?? results/idle-scheduler-run.json\n?? results/tuning-foreground.json\n?? results/tuning-normal-rejected.json\n?? results/tuning-normal-scheduler.json\n?? scripts/bench-local.sh",
+    "complete": true,
+    "config": {
+      "rounds": 1,
+      "minSamples": 2,
+      "seconds": 0.02,
+      "concurrency": 1,
+      "warmups": 1,
+      "warmupSeconds": 0,
+      "selected": [
+        "js-flat"
+      ],
+      "cases": [
+        "noop"
+      ]
+    },
+    "files": {
+      "js/dot-generated.js": "9d453ebc8e5ebd68972b5ba4cb7f018a0c075f49f25da3d94dc5c9ea1fb06a28",
+      "js/fast-worker.js": "e2fa45abf545307cf0059756357b9a1c4748f85d56206e2f3f5d1e8bb28e0af7",
+      "js/fixed-worker.js": "7f99475ce9699e8a9f0ef4339748f0870caabf5fa79dc3225047f0dac5e3e6bf",
+      "js/flat-worker.js": "365f16397957a7bad9321c3acf99e832d5789b1bc9e027cbb6a8544a133f60b6",
+      "js/http.js": "5d2491367430e007c3840cdd4be53c582103d71eb2ae8cf86f8a193ca7f42009",
+      "js/image-linear.js": "d2811064d5b74ae57c6e12292be80276936795f3dc6565bb02fdaf5022829c03",
+      "js/kernels-fast.js": "fd56f5a73edf36642c18c8245c699740f956472ca848e7a0eebe8568f9738f50",
+      "js/kernels-flat.js": "995a8fde527eb2a2e29815b1a6d09a27defe823ad97afbd7d7d11749607d5ce4",
+      "js/kernels-split.js": "0d00bee2ab8e428c9d7fec2739d2d14124503c1568a9b356fb7a6efc99bddac9",
+      "js/kernels.js": "d9229ad0ff024d949814f3dc35622ee64ea12c14fa2dd96f07bb694a70152ee1",
+      "js/phased-worker.js": "6bbf8f8f7cfc481df22ae17b82dbdd513ea9faf1605627f40e2502d6d41f8c6c",
+      "js/primed-worker.js": "469ba68ec379028a1b81d5be7814c325ddedc0237c8363583133c44bdc4e6a36",
+      "js/rust-worker.js": "4db91e574df64dd5950252d8d5fc600ee2ce17dae342de48e73ed9810654ba80",
+      "js/split-worker.js": "e397b439971b48bea23989b56fda1ad60c61819a914dc6bfa9b10026df2995ea",
+      "js/vector-phased.js": "6446ded8bf161caff64e085764f8f61a599ee445bc783ebd042af98c25ec8e07",
+      "js/wasm-kernels.js": "23810620a8a369fd3e652fe49f96a117caec07ca0a7573a29b3d96257a1c067e",
+      "js/worker.js": "e3eb04e39631cc5cbf39e4530837a4d1c5f2b80ff42adc4747c438e646c3c89a",
+      "rust/lib.rs": "1383357b3f9faa04756e1c10497bd23a0ca9bb11acfd9fe746a433ebfdb351c5",
+      "scripts/bench-local.sh": "a3de3ba9ccfe1363f1346abf81564afa216a37588e42edb0fab1c0bb24222200",
+      "scripts/bench.mjs": "daa12fe5a66b699af65eeda5ac2f730e1ff663345a64b4296d7d074caa961493",
+      "scripts/build-manifest.mjs": "dcd9428483901e137ffde58b84ac3d4d9033f38788aba7136177b5650947d41b",
+      "scripts/build.sh": "827983f500539bbf2197069e3edbd94fae210c3e0b1c0cc12ae37fbae99d7aa2",
+      "scripts/config.mjs": "e2260bc72dc2a946f0fe81248384f3c124e3e60b545d49b8f8ad8516df0de7ba",
+      "scripts/diagnose.mjs": "f9c043434cc0d01de97c15e8399bef9bb59a52b9062be7b10ea1b71eaad1c182",
+      "scripts/example.mjs": "10f2d88912ec12891ae0b0a437a76317db0de3c1c6b555b78da89632f6ab1fab",
+      "scripts/fixtures.mjs": "338571103d636f52ff895b72203484e71fe0e88bec7d14b395e631d4aaa4efdc",
+      "scripts/generate-dot.mjs": "8166151b77669c4e7c2cef09f59bad36500dae8d6273b62a32f86274d85e2e7e",
+      "scripts/node-server.mjs": "e1cd71aee6e5553b60211083f8edd14449865da6ff71bd2c57c1fa68f585fbc8",
+      "scripts/order.mjs": "25499dd7644acc02d1918078e52433db9aa238835b9eca9760a79a8cf1c32987",
+      "scripts/profile.mjs": "32275009c80df5208917a89d030fcbbff6089d9ddf6fc0260a82a7749e844482",
+      "scripts/report.mjs": "871bc146017ae6af813e7d3e59954d8d4c01bd86aac711465f2115a613a80a4e",
+      "scripts/runtime.mjs": "224283f8878182dce2d066d51ec6311380b0f87c70c55fc6700d6671bc7ef82b",
+      "scripts/test-node.mjs": "17c86b6f16016e1f62d6e7d63bf45658ad89052947c0aa1de979bb32a559bbe5",
+      "scripts/test-order.mjs": "e0af9c423a6fc352db89a77ae9e69408853b0f98e9bcf63a89e9ef996012d14e",
+      "scripts/test.mjs": "56359805d8fd48122d6ab9b0085ed17e9452245a37cd9eb64134966962176718",
+      "scripts/workerd.sh": "c7ce096d6aaf555aa702eefa6a5cf318c0e3ef475363d0a8cba39e33bfeb5a72",
+      "Cargo.toml": "04bf4d7023209d7007018a7d7cf8eee045e9c30d1f55a51f4ef29bdf41af979b",
+      "Cargo.lock": "781c8d4863f8da77a11cc5a8f1e3fa90eb8dba7b75c6b799ef20fed2319fb426",
+      "rust-toolchain.toml": "d30dfd45f6ee9ef9f90db627260edb5c36434131e0b1964177cd25c9325ca225",
+      "package.json": "a72442e54c68081213cc122f42c9b42ea736497d97ff4c4605c5cb1ff8f604ea",
+      "package-lock.json": "0df98e35f8e39c7bbc2d978440e6666cc58843c60ccc140822b0ca99a14db5b9"
+    },
+    "wasm": {
+      "manual-o3.wasm": {
+        "bytes": 33605,
+        "gzipBytes": 14653,
+        "sha256": "cf7bfc97ce61389a51d2233373522deb55bc3117f3167d63c202a0f0bdd0a104"
+      },
+      "manual.wasm": {
+        "bytes": 35992,
+        "gzipBytes": 15002,
+        "sha256": "65a58ab0f41f9da977133d840e0d7db2c5736c2432e0df5747a0b23827a4aeeb"
+      },
+      "scalar.wasm": {
+        "bytes": 29338,
+        "gzipBytes": 12167,
+        "sha256": "5f736190b80c5d390a0aa591239ac1bb4b96e78c06a224c58515cb652df4c719"
+      },
+      "simd-o3.wasm": {
+        "bytes": 33322,
+        "gzipBytes": 14614,
+        "sha256": "6bf212358a6feadd2be073c351bcb666ea46138e16862c886e2e1fd77d00d0c7"
+      },
+      "simd-oz.wasm": {
+        "bytes": 33306,
+        "gzipBytes": 14639,
+        "sha256": "ef1d211d5eb0109c65f2ececf323535da08886cf4fe2d5638d5c6ed801f88a1e"
+      },
+      "simd.wasm": {
+        "bytes": 35791,
+        "gzipBytes": 15092,
+        "sha256": "3a1e1e67ca957199fc1fad862c1928c99687f6356cd44b181e4c102255d8095e"
+      },
+      "small.wasm": {
+        "bytes": 23564,
+        "gzipBytes": 9665,
+        "sha256": "28808c1a05aee4acb05d83a355725037c4ba758af1dd28974873da31c62de222"
+      },
+      "unroll-o3.wasm": {
+        "bytes": 33991,
+        "gzipBytes": 14749,
+        "sha256": "7a1a89ec61837c185a1c4606a55d62df193f240a9829ba0727847b4a77d395c3"
+      },
+      "unroll.wasm": {
+        "bytes": 36322,
+        "gzipBytes": 15100,
+        "sha256": "cc897a003ded31065ce026409b535ade57349072bc0158d41106fdeb0e0b3f08"
+      }
+    },
+    "configFiles": {
+      "build/js-flat.capnp": "7044998a253d7626ea560fdc84366d3d7a70a60247fffaa0aff9d3f0f99ebc47"
+    },
+    "loadEnd": [
+      8.44,
+      6.76,
+      5.21
+    ],
+    "finished": "2026-10-21T08:56:16.295Z"
+  },
+  "fixtures": [
+    {
+      "name": "noop",
+      "path": "/noop",
+      "inputs": [
+        {
+          "inputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "outputHash": "2689367b205c16ce32ed4200942b8b8b1e262dfc70d9bc9fbc77c49699a4f1df",
+          "inputBytes": 0,
+          "outputBytes": 2
+        },
+        {
+          "inputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "outputHash": "2689367b205c16ce32ed4200942b8b8b1e262dfc70d9bc9fbc77c49699a4f1df",
+          "inputBytes": 0,
+          "outputBytes": 2
+        },
+        {
+          "inputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "outputHash": "2689367b205c16ce32ed4200942b8b8b1e262dfc70d9bc9fbc77c49699a4f1df",
+          "inputBytes": 0,
+          "outputBytes": 2
+        },
+        {
+          "inputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "outputHash": "2689367b205c16ce32ed4200942b8b8b1e262dfc70d9bc9fbc77c49699a4f1df",
+          "inputBytes": 0,
+          "outputBytes": 2
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "round": 0,
+      "variant": "js-flat",
+      "case": "noop",
+      "concurrency": 1,
+      "samples": [
+        0.4740409999999997,
+        0.5012920000000349,
+        0.33768200000002935,
+        3.46642700000001,
+        0.5990719999999783,
+        0.7055000000000291,
+        3.107670999999982,
+        0.3492959999999812,
+        0.19946799999996756,
+        0.34699999999998,
+        0.25893100000001823,
+        0.16015299999997978,
+        1.4561150000000112,
+        0.23113899999998466,
+        0.16376400000001468,
+        0.14903199999997696,
+        0.25278299999996534,
+        0.16471400000000358,
+        0.20779400000003534,
+        0.30019000000004326,
+        0.16317700000001878,
+        0.16394600000000992,
+        0.20335600000004206,
+        0.18018799999998691,
+        0.47535900000002584,
+        0.25707999999997355,
+        0.16225800000000845,
+        0.15138100000001486,
+        2.6155029999999897,
+        0.3013569999999959,
+        0.15908899999999448,
+        0.1498900000000276,
+        0.16713400000003276,
+        0.14816700000000083,
+        0.2868060000000128,
+        0.15470799999997098,
+        1.8356299999999806
+      ],
+      "elapsedMs": 21.247344,
+      "requests": 37,
+      "p50": 0.25278299999996534,
+      "p95": 3.107670999999982,
+      "p99": 3.46642700000001,
+      "rps": 1741.3941243667916,
+      "cpuMs": 0,
+      "processRssKB": 49128,
+      "processPeakRssKB": 49128,
+      "scratchBytes": 0,
+      "processStartupMs": 17.376423999999986,
+      "firstInvocationMs": 1.7390379999999936,
+      "scheduling": {
+        "serverBefore": 0,
+        "serverAfter": 0,
+        "clientBefore": 0,
+        "clientAfter": 0,
+        "serverAffinity": "2-3"
+      }
+    }
+  ]
+}

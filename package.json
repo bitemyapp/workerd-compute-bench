@@ -5,7 +5,7 @@
   "scripts": {
     "build": "bash scripts/build.sh",
     "test": "node scripts/test-order.mjs && node scripts/test.mjs && node scripts/test-node.mjs",
-    "bench": "node scripts/bench.mjs",
+    "bench": "bash scripts/bench-local.sh",
     "serve": "bash scripts/workerd.sh serve build/js-flat.capnp",
     "serve:rust": "bash scripts/workerd.sh serve build/rust-manual-o3.capnp",
     "start:node": "node scripts/node-server.mjs",

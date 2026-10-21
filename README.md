@@ -10,24 +10,29 @@ On this NixOS machine:
 
 ```sh
 cd /home/callen/work/workerd-compute-bench
-nix develop
+mkdir -p .tools
+nix print-dev-env > .tools/env
+source .tools/env
+eval "$shellHook"
 npm ci
 npm run build
 npm test
-npm run bench
+bash scripts/bench-local.sh
 ```
 
 The locked Nix shell supplies Node 24, Binaryen, Rustup, and a glibc loader for the npm workerd ELF on NixOS. Rustup installs the version and Wasm target pinned in `rust-toolchain.toml`. Outside Nix, install those tools, then use the same npm commands. The workerd version is pinned in `package-lock.json`. No Cloudflare account or credentials are needed.
 
-For less scheduler noise on Linux, pin the client and server to different physical cores:
+For less scheduler noise on Linux, reserve separate physical cores for the client and the workerd process (including its background compiler/GC threads):
 
 ```sh
-BENCH_CPU=2 VARIANTS=js-flat,rust-manual-o3 \
+BENCH_CPU=2,3 VARIANTS=js-flat,rust-manual-o3 \
   ROUNDS=5 SECONDS=1.5 SAMPLES=120 \
-  OUTPUT=results/my-run.json taskset -c 0 npm run bench
+  OUTPUT=results/my-run.json taskset -c 0 bash scripts/bench-local.sh
 ```
 
 Choose CPUs valid for your machine. Leave `BENCH_CPU` unset on macOS. Ports 8787 (workerd) and 8790 (controlled origin) must be free. Run benchmark processes sequentially. The harness stops its own workerd and origin processes, validates every response, and writes results after each measured block. A completed modern result has `meta.complete: true`.
+
+This workstation automatically demotes directly executed Node processes to Linux `SCHED_IDLE`/nice 16. The launcher uses the same glibc loader for Node and workerd to preserve normal scheduling, without modifying other processes or global settings. On Linux it requires `SCHED_OTHER` for both processes at the start and end of every measured block; it aborts if the policy changes. Use the direct `bash scripts/bench-local.sh` command from a normal-priority shell on this host. `BENCH_NODE_LOADER` can override the loader; ordinary Linux/macOS systems can run Node directly. Early tuning artifacts predate this audit and are exploratory. The published final runs all pass the scheduling checks.
 
 Run either service yourself:
 
@@ -59,7 +64,7 @@ Search supports 1–32768 candidates, dimensions 16–256 in multiples of 16, 1�
 
 ## Measurement and constraints
 
-Each variant runs alone in a fresh workerd process for each round. Within a process the cases run in a fixed order. Variant order rotates and reverses between rounds. Before recording a case, the harness measures its first invocation and then warms it for a minimum count **and** duration. Recorded latency starts immediately before the Node HTTP request and ends after the full response body arrives. Validation happens after the latency clock stops. There are no internal Worker timers in the measurement.
+Each variant runs alone in a fresh workerd process for each round. The final launcher checks normal Linux scheduling for client and server before and after every block. Workerd may use two P-cores for its runtime/compiler threads; the application itself uses one isolate and executes kernels on one thread. Within a process the cases run in a fixed order. Variant order rotates and reverses between rounds. Before recording a case, the harness measures its first invocation and then warms it for a minimum count **and** duration. Recorded latency starts immediately before the Node HTTP request and ends after the full response body arrives. Validation happens after the latency clock stops. There are no internal Worker timers in the measurement.
 
 The sequential runs measure warm end-to-end latency and achieved request rate. Separate concurrency-four runs show queueing/throughput under a closed-loop client. They are not open-loop capacity tests and are subject to coordinated omission. Each case stops only after both its minimum sample count and minimum time have elapsed. Quantiles use nearest rank. Per-block samples and summaries, source hashes, fixture/output hashes, toolchain versions, CPU details, affinity, governor, and load are retained. Reported process CPU uses Linux `/proc/PID/stat` deltas divided by requests; its granularity is recorded in `clockTicks`. It includes workerd's HTTP, GC, and runtime overhead and is **not** Cloudflare's billed CPU metric. RSS/high-water RSS cover the entire process, not a single isolate.
 
@@ -91,14 +96,14 @@ Profiles go in `results/profiles/`. Inspector/profiling is disabled during all b
 After building and testing, run the following inside the Nix shell on the recorded machine. They intentionally overwrite the three final JSON artifacts and regenerate `RESULTS.md`. On another system, choose appropriate CPU IDs or remove affinity settings. The default `npm run bench` instead writes `results/benchmark.json`, leaving the published evidence intact.
 
 ```sh
-BENCH_CPU=2 ROUNDS=5 SAMPLES=120 SECONDS=1.2 WARMUPS=80 WARMUP_SECONDS=1 \
-  OUTPUT=results/final-sequential.json taskset -c 0 npm run bench
-BENCH_CPU=2 ROUNDS=3 SAMPLES=120 SECONDS=1.2 WARMUPS=80 WARMUP_SECONDS=1 \
+BENCH_CPU=2,3 ROUNDS=5 SAMPLES=120 SECONDS=1.2 WARMUPS=80 WARMUP_SECONDS=1 \
+  OUTPUT=results/final-sequential.json taskset -c 0 bash scripts/bench-local.sh
+BENCH_CPU=2,3 ROUNDS=3 SAMPLES=120 SECONDS=1.2 WARMUPS=80 WARMUP_SECONDS=1 \
   CONCURRENCY=4 CASES=image-1024,search-large,image-io \
-  OUTPUT=results/final-concurrency4.json taskset -c 0 npm run bench
-BENCH_CPU=2 ROUNDS=3 SAMPLES=60 SECONDS=0.75 WARMUPS=50 WARMUP_SECONDS=0.75 \
+  OUTPUT=results/final-concurrency4.json taskset -c 0 bash scripts/bench-local.sh
+BENCH_CPU=2,3 ROUNDS=3 SAMPLES=60 SECONDS=0.75 WARMUPS=50 WARMUP_SECONDS=0.75 \
   VARIANTS=js-baseline,js-flat,rust-baseline,rust-manual-o3 CASES=image-1024,search-large \
-  OUTPUT=results/final-baselines.json taskset -c 0 npm run bench
+  OUTPUT=results/final-baselines.json taskset -c 0 bash scripts/bench-local.sh
 npm run report
 ```
 

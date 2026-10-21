@@ -1,0 +1,333 @@
+{
+  "meta": {
+    "diagnosticTrace": false,
+    "build": {
+      "rustc": "rustc 1.99.0 (b940084d7 2026-09-28)",
+      "sources": {
+        "Cargo.toml": "04bf4d7023209d7007018a7d7cf8eee045e9c30d1f55a51f4ef29bdf41af979b",
+        "Cargo.lock": "781c8d4863f8da77a11cc5a8f1e3fa90eb8dba7b75c6b799ef20fed2319fb426",
+        "rust-toolchain.toml": "d30dfd45f6ee9ef9f90db627260edb5c36434131e0b1964177cd25c9325ca225",
+        "rust/lib.rs": "1383357b3f9faa04756e1c10497bd23a0ca9bb11acfd9fe746a433ebfdb351c5",
+        "scripts/build.sh": "827983f500539bbf2197069e3edbd94fae210c3e0b1c0cc12ae37fbae99d7aa2"
+      },
+      "artifacts": {
+        "build/manual-o3.wasm": "cf7bfc97ce61389a51d2233373522deb55bc3117f3167d63c202a0f0bdd0a104",
+        "build/manual.wasm": "65a58ab0f41f9da977133d840e0d7db2c5736c2432e0df5747a0b23827a4aeeb",
+        "build/scalar.wasm": "5f736190b80c5d390a0aa591239ac1bb4b96e78c06a224c58515cb652df4c719",
+        "build/simd-o3.wasm": "6bf212358a6feadd2be073c351bcb666ea46138e16862c886e2e1fd77d00d0c7",
+        "build/simd-oz.wasm": "ef1d211d5eb0109c65f2ececf323535da08886cf4fe2d5638d5c6ed801f88a1e",
+        "build/simd.wasm": "3a1e1e67ca957199fc1fad862c1928c99687f6356cd44b181e4c102255d8095e",
+        "build/small.wasm": "28808c1a05aee4acb05d83a355725037c4ba758af1dd28974873da31c62de222",
+        "build/unroll-o3.wasm": "7a1a89ec61837c185a1c4606a55d62df193f240a9829ba0727847b4a77d395c3",
+        "build/unroll.wasm": "cc897a003ded31065ce026409b535ade57349072bc0158d41106fdeb0e0b3f08"
+      }
+    },
+    "date": "2026-10-21T08:48:27.175Z",
+    "node": "v24.21.0",
+    "rust": "rustc 1.99.0 (b940084d7 2026-09-28)",
+    "workerd": "workerd 2026-10-21",
+    "binaryen": "wasm-opt version 132",
+    "kernel": "7.2.10",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": [
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 4490
+      },
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 3914
+      },
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 4499
+      },
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 4190
+      },
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 2248
+      },
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 3144
+      },
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 2112
+      },
+      {
+        "model": "Intel(R) Core(TM) Ultra 7 365",
+        "mhz": 3458
+      }
+    ],
+    "lscpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"46 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"8\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-7\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"GenuineIntel\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"Intel(R) Core(TM) Ultra 7 365\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"6\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"204\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"8\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"3\"\n      },{\n         \"field\": \"Microcode version:\",\n         \"data\": \"0x11c\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"86%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"4900.0000\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"400.0000\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"6835.20\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdt_a rdseed adx smap clflushopt clwb intel_pt sha_ni xsaveopt xsavec xgetbv1 xsaves split_lock_detect user_shstk avx_vnni lass fred lam wbnoinvd dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp hwp_pkg_req hfi vnmi umip pku ospke waitpkg gfni vaes vpclmulqdq rdpid bus_lock_detect movdiri movdir64b fsrm md_clear serialize pconfig arch_lbr ibt flush_l1d arch_capabilities\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"VT-x\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"320 KiB (8 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"512 KiB (8 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"16 MiB (5 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"12 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-7\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS Not affected; BHI BHI_DIS_S\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Not affected\"\n      }\n   ]\n}",
+    "loadStart": [
+      5.24,
+      4.61,
+      4.09
+    ],
+    "serverCPU": "2,3",
+    "clientAffinity": "pid 659910's current affinity list: 0",
+    "clockTicks": 100,
+    "clientScheduler": "pid 659910's current scheduling policy: SCHED_OTHER\npid 659910's current scheduling priority: 0\npid 659910's current runtime parameter: 2800000",
+    "requireNormalScheduler": true,
+    "governor": null,
+    "git": "a7701addabf8c6dbc6cb0406236288d07a918a21",
+    "gitStatus": "M scripts/bench.mjs\n M scripts/runtime.mjs\n?? results/idle-scheduler-run.json\n?? results/tuning-normal-scheduler.json",
+    "complete": false,
+    "config": {
+      "rounds": 1,
+      "minSamples": 40,
+      "seconds": 0.3,
+      "concurrency": 1,
+      "warmups": 40,
+      "warmupSeconds": 0.5,
+      "selected": [
+        "js-flat",
+        "rust-manual-o3"
+      ],
+      "cases": [
+        "image-256",
+        "image-1024",
+        "search-small",
+        "search-large",
+        "image-io"
+      ]
+    },
+    "files": {
+      "js/dot-generated.js": "9d453ebc8e5ebd68972b5ba4cb7f018a0c075f49f25da3d94dc5c9ea1fb06a28",
+      "js/fast-worker.js": "e2fa45abf545307cf0059756357b9a1c4748f85d56206e2f3f5d1e8bb28e0af7",
+      "js/fixed-worker.js": "7f99475ce9699e8a9f0ef4339748f0870caabf5fa79dc3225047f0dac5e3e6bf",
+      "js/flat-worker.js": "365f16397957a7bad9321c3acf99e832d5789b1bc9e027cbb6a8544a133f60b6",
+      "js/http.js": "5d2491367430e007c3840cdd4be53c582103d71eb2ae8cf86f8a193ca7f42009",
+      "js/image-linear.js": "d2811064d5b74ae57c6e12292be80276936795f3dc6565bb02fdaf5022829c03",
+      "js/kernels-fast.js": "fd56f5a73edf36642c18c8245c699740f956472ca848e7a0eebe8568f9738f50",
+      "js/kernels-flat.js": "995a8fde527eb2a2e29815b1a6d09a27defe823ad97afbd7d7d11749607d5ce4",
+      "js/kernels-split.js": "0d00bee2ab8e428c9d7fec2739d2d14124503c1568a9b356fb7a6efc99bddac9",
+      "js/kernels.js": "d9229ad0ff024d949814f3dc35622ee64ea12c14fa2dd96f07bb694a70152ee1",
+      "js/phased-worker.js": "6bbf8f8f7cfc481df22ae17b82dbdd513ea9faf1605627f40e2502d6d41f8c6c",
+      "js/primed-worker.js": "469ba68ec379028a1b81d5be7814c325ddedc0237c8363583133c44bdc4e6a36",
+      "js/rust-worker.js": "4db91e574df64dd5950252d8d5fc600ee2ce17dae342de48e73ed9810654ba80",
+      "js/split-worker.js": "e397b439971b48bea23989b56fda1ad60c61819a914dc6bfa9b10026df2995ea",
+      "js/vector-phased.js": "6446ded8bf161caff64e085764f8f61a599ee445bc783ebd042af98c25ec8e07",
+      "js/wasm-kernels.js": "23810620a8a369fd3e652fe49f96a117caec07ca0a7573a29b3d96257a1c067e",
+      "js/worker.js": "e3eb04e39631cc5cbf39e4530837a4d1c5f2b80ff42adc4747c438e646c3c89a",
+      "rust/lib.rs": "1383357b3f9faa04756e1c10497bd23a0ca9bb11acfd9fe746a433ebfdb351c5",
+      "scripts/bench.mjs": "ff5107d948451368de24571fde6fa0c9f079951849319b802c19304df32bb94a",
+      "scripts/build-manifest.mjs": "dcd9428483901e137ffde58b84ac3d4d9033f38788aba7136177b5650947d41b",
+      "scripts/build.sh": "827983f500539bbf2197069e3edbd94fae210c3e0b1c0cc12ae37fbae99d7aa2",
+      "scripts/config.mjs": "e2260bc72dc2a946f0fe81248384f3c124e3e60b545d49b8f8ad8516df0de7ba",
+      "scripts/diagnose.mjs": "f9c043434cc0d01de97c15e8399bef9bb59a52b9062be7b10ea1b71eaad1c182",
+      "scripts/example.mjs": "10f2d88912ec12891ae0b0a437a76317db0de3c1c6b555b78da89632f6ab1fab",
+      "scripts/fixtures.mjs": "338571103d636f52ff895b72203484e71fe0e88bec7d14b395e631d4aaa4efdc",
+      "scripts/generate-dot.mjs": "8166151b77669c4e7c2cef09f59bad36500dae8d6273b62a32f86274d85e2e7e",
+      "scripts/node-server.mjs": "e1cd71aee6e5553b60211083f8edd14449865da6ff71bd2c57c1fa68f585fbc8",
+      "scripts/order.mjs": "25499dd7644acc02d1918078e52433db9aa238835b9eca9760a79a8cf1c32987",
+      "scripts/profile.mjs": "32275009c80df5208917a89d030fcbbff6089d9ddf6fc0260a82a7749e844482",
+      "scripts/report.mjs": "675deae5d9e1253585b2fe2cb59916ce9ff5c3b2fc95d57cc9e1fd1dd280c3db",
+      "scripts/runtime.mjs": "224283f8878182dce2d066d51ec6311380b0f87c70c55fc6700d6671bc7ef82b",
+      "scripts/test-node.mjs": "17c86b6f16016e1f62d6e7d63bf45658ad89052947c0aa1de979bb32a559bbe5",
+      "scripts/test-order.mjs": "e0af9c423a6fc352db89a77ae9e69408853b0f98e9bcf63a89e9ef996012d14e",
+      "scripts/test.mjs": "56359805d8fd48122d6ab9b0085ed17e9452245a37cd9eb64134966962176718",
+      "scripts/workerd.sh": "c7ce096d6aaf555aa702eefa6a5cf318c0e3ef475363d0a8cba39e33bfeb5a72",
+      "Cargo.toml": "04bf4d7023209d7007018a7d7cf8eee045e9c30d1f55a51f4ef29bdf41af979b",
+      "Cargo.lock": "781c8d4863f8da77a11cc5a8f1e3fa90eb8dba7b75c6b799ef20fed2319fb426",
+      "rust-toolchain.toml": "d30dfd45f6ee9ef9f90db627260edb5c36434131e0b1964177cd25c9325ca225",
+      "package.json": "a92a0b312d67e5e0ec86bdacab8aad69d13f21634d004b218636175306077311",
+      "package-lock.json": "0df98e35f8e39c7bbc2d978440e6666cc58843c60ccc140822b0ca99a14db5b9"
+    },
+    "wasm": {
+      "manual-o3.wasm": {
+        "bytes": 33605,
+        "gzipBytes": 14653,
+        "sha256": "cf7bfc97ce61389a51d2233373522deb55bc3117f3167d63c202a0f0bdd0a104"
+      },
+      "manual.wasm": {
+        "bytes": 35992,
+        "gzipBytes": 15002,
+        "sha256": "65a58ab0f41f9da977133d840e0d7db2c5736c2432e0df5747a0b23827a4aeeb"
+      },
+      "scalar.wasm": {
+        "bytes": 29338,
+        "gzipBytes": 12167,
+        "sha256": "5f736190b80c5d390a0aa591239ac1bb4b96e78c06a224c58515cb652df4c719"
+      },
+      "simd-o3.wasm": {
+        "bytes": 33322,
+        "gzipBytes": 14614,
+        "sha256": "6bf212358a6feadd2be073c351bcb666ea46138e16862c886e2e1fd77d00d0c7"
+      },
+      "simd-oz.wasm": {
+        "bytes": 33306,
+        "gzipBytes": 14639,
+        "sha256": "ef1d211d5eb0109c65f2ececf323535da08886cf4fe2d5638d5c6ed801f88a1e"
+      },
+      "simd.wasm": {
+        "bytes": 35791,
+        "gzipBytes": 15092,
+        "sha256": "3a1e1e67ca957199fc1fad862c1928c99687f6356cd44b181e4c102255d8095e"
+      },
+      "small.wasm": {
+        "bytes": 23564,
+        "gzipBytes": 9665,
+        "sha256": "28808c1a05aee4acb05d83a355725037c4ba758af1dd28974873da31c62de222"
+      },
+      "unroll-o3.wasm": {
+        "bytes": 33991,
+        "gzipBytes": 14749,
+        "sha256": "7a1a89ec61837c185a1c4606a55d62df193f240a9829ba0727847b4a77d395c3"
+      },
+      "unroll.wasm": {
+        "bytes": 36322,
+        "gzipBytes": 15100,
+        "sha256": "cc897a003ded31065ce026409b535ade57349072bc0158d41106fdeb0e0b3f08"
+      }
+    },
+    "error": "AssertionError [ERR_ASSERTION]: workerd must use SCHED_OTHER\n\n5 !== 0\n\n    at file:///home/callen/work/workerd-compute-bench/scripts/bench.mjs:69:20\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "loadEnd": [
+      5.24,
+      4.61,
+      4.09
+    ],
+    "finished": "2026-10-21T08:48:28.854Z"
+  },
+  "fixtures": [
+    {
+      "name": "image-256",
+      "path": "/image?w=256&h=256",
+      "inputs": [
+        {
+          "inputHash": "6c0ab58ed71bdad9ad445b1b4cff74fe6fe85842f3d96af6b06dbe1a17d56a69",
+          "outputHash": "a367b1ead89699da207b7ac59dc7ab961843bec392f6bbe2985eb83367488ba0",
+          "inputBytes": 65536,
+          "outputBytes": 65536
+        },
+        {
+          "inputHash": "530b7d1612e46595ac86dfb7d84359dd7114ab73ce9388134240d839b06619d8",
+          "outputHash": "475fd66078a415be90229b107d44b2dfc67103c4829d68969e0bb22fcb0e9f5e",
+          "inputBytes": 65536,
+          "outputBytes": 65536
+        },
+        {
+          "inputHash": "f383a9fa5a068b29678aaee1100768683bde57159cd6166f7b43854d98262a80",
+          "outputHash": "dd4febaaf5d75651e114d90ee28eb8eb57cf7ae0ade32083484e3385cee232bb",
+          "inputBytes": 65536,
+          "outputBytes": 65536
+        },
+        {
+          "inputHash": "e97e134f104fd10678d2c2720d9c7d74da41f9eafbd33ef512908ec92bd272a4",
+          "outputHash": "481c2782e07e7810734221811c674c28841143e41dd8cf00364a8201623cfdd8",
+          "inputBytes": 65536,
+          "outputBytes": 65536
+        }
+      ]
+    },
+    {
+      "name": "image-1024",
+      "path": "/image?w=1024&h=1024",
+      "inputs": [
+        {
+          "inputHash": "b58660a3ed57c1e2d267b539cb01432c7c8b679e8d7e4794777617eb951199f0",
+          "outputHash": "4d2a5032e3474befc2e9e6d60999e5892e42c04835de14198816e3366bc07bdb",
+          "inputBytes": 1048576,
+          "outputBytes": 1048576
+        },
+        {
+          "inputHash": "3f820bfb080c827bf26d173ab0320415ff0463983cefae172d6e3a387bcdf987",
+          "outputHash": "4458cc865ddc62f482377eabfe07b8e34f847337ee1e801d05af46a6026b8a18",
+          "inputBytes": 1048576,
+          "outputBytes": 1048576
+        },
+        {
+          "inputHash": "27fb16cc16516a7490ba9e0cc83ee046b8e0da5790f72a0e879905373cd842e6",
+          "outputHash": "c67e17bcaa3d8d25ebf35b8e4a75e2c08c17e3b3ec48e967a2b7cf1acf03b69c",
+          "inputBytes": 1048576,
+          "outputBytes": 1048576
+        },
+        {
+          "inputHash": "6972a8743e723a17bc0bfb92a59b229afce6e4e4041f81036cb594f3e2c67846",
+          "outputHash": "79ccf6daeea9b95f783a645f55f68d91d6423e57dc526b652a3f02d733299f9b",
+          "inputBytes": 1048576,
+          "outputBytes": 1048576
+        }
+      ]
+    },
+    {
+      "name": "search-small",
+      "path": "/search?n=1024&d=128&q=4&k=10",
+      "inputs": [
+        {
+          "inputHash": "a8932c7413e84da75a94107c1f7f92ddd269356e6ccacc1d2bdba8de99ef420b",
+          "outputHash": "3ac3580103920e1be12d988dfb88ea5640c821033fa07add86c1a4ca8e628a70",
+          "inputBytes": 131584,
+          "outputBytes": 320
+        },
+        {
+          "inputHash": "baf6a389f048ed8d3559d1d9a342d5c79da95a0d5eeda76dd08ff2206bf6788c",
+          "outputHash": "177be76c86f249d55a8b8885d693798fac229c36ab841a26d394a3b66ffd13c7",
+          "inputBytes": 131584,
+          "outputBytes": 320
+        },
+        {
+          "inputHash": "3fbb9701ff9c85a7bc2f4f90ea34396a8f1fc120aa55b2c00a596680c0986f67",
+          "outputHash": "529098474cdbf7eb8629ae8d7c8f75a85a735364d9da815f681da2293ad4d2c3",
+          "inputBytes": 131584,
+          "outputBytes": 320
+        },
+        {
+          "inputHash": "bb82b9eaf3b2fde52cb05478a6636ce9ca5a9ca985d6427a141666414a430934",
+          "outputHash": "d19600e8503a95aa9d492a74bc4d4adc740fb098a2a557f05ae3096cfef32f82",
+          "inputBytes": 131584,
+          "outputBytes": 320
+        }
+      ]
+    },
+    {
+      "name": "search-large",
+      "path": "/search?n=32768&d=128&q=8&k=10",
+      "inputs": [
+        {
+          "inputHash": "1b5248cd1278a4cf1d0118c5a8469fbe02b16eacb87c0ee2e9918dc55141ff28",
+          "outputHash": "da92a4ef74957c034bb330a5b5ef59195cac2b788772bbd53cb3d264f367ef70",
+          "inputBytes": 4195328,
+          "outputBytes": 640
+        },
+        {
+          "inputHash": "81efbba165a2aa6d2a421e1d1d92191e8fdd020f0d5e2ba7e626af343b8b506a",
+          "outputHash": "0c1a65b6b2a6e7bb7f8fa2124c3affefcf8858ff5f014d12e60393ed43654140",
+          "inputBytes": 4195328,
+          "outputBytes": 640
+        },
+        {
+          "inputHash": "8fae95b9fb49e372129521a7e04d64c649a5e9eaac8fc4412f6ff95fece4bbb8",
+          "outputHash": "01a0ec062c2d1ab1afcc98a6ba8f942ce61931aef03ae8e25988467d5169a7d1",
+          "inputBytes": 4195328,
+          "outputBytes": 640
+        },
+        {
+          "inputHash": "fac5e2668cb2c9c7c538f3610f850916f2a74d999afd2005d514ce13f48eba95",
+          "outputHash": "b3e53dd3d36c2b55bdc14c7c84432c1ccd1655834960ed481f795e452944f59c",
+          "inputBytes": 4195328,
+          "outputBytes": 640
+        }
+      ]
+    },
+    {
+      "name": "image-io",
+      "path": "/image?w=512&h=512&source=origin",
+      "inputs": [
+        {
+          "inputHash": "eead1ddd2ad97095116f3c4fed17eec7fde770c1e9c65e600a96d310bf71b7fe",
+          "outputHash": "afcdc7e952dd91db6517c639950442bf5b8a080b31258973a656ff31fb05bbbe",
+          "inputBytes": 262144,
+          "outputBytes": 262144
+        }
+      ]
+    }
+  ],
+  "blocks": []
+}

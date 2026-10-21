@@ -48,7 +48,7 @@ export function procStats(pid) {
   try {
     const stat=readFileSync(`/proc/${pid}/stat`,'utf8').split(') ')[1].split(' ');
     const status=readFileSync(`/proc/${pid}/status`,'utf8');
-    return {cpuTicks:Number(stat[11])+Number(stat[12]),rssKB:Number(status.match(/VmRSS:\s+(\d+)/)?.[1]??0),peakRssKB:Number(status.match(/VmHWM:\s+(\d+)/)?.[1]??0)};
+    return {cpuTicks:Number(stat[11])+Number(stat[12]),schedulerPolicy:Number(stat[38]),nice:Number(stat[16]),affinity:status.match(/Cpus_allowed_list:\s+([^\n]+)/)?.[1],rssKB:Number(status.match(/VmRSS:\s+(\d+)/)?.[1]??0),peakRssKB:Number(status.match(/VmHWM:\s+(\d+)/)?.[1]??0)};
   } catch {return null;}
 }
 export const clockTicks=process.platform==='linux'?Number(execFileSync('getconf',['CLK_TCK'],{encoding:'utf8'})):null;

@@ -28,11 +28,14 @@ const meta={diagnosticTrace:!!process.env.TRACE_JIT,build:verifyBuild(),date:new
   kernel:os.release(),platform:os.platform(),arch:os.arch(),cpu:os.cpus().map(c=>({model:c.model,mhz:c.speed})),
   lscpu:command('lscpu',['-J']),loadStart:os.loadavg(),serverCPU:process.env.BENCH_CPU??null,
   clientAffinity:command('taskset',['-pc',String(process.pid)]),clockTicks,
-  governor:file(`/sys/devices/system/cpu/cpu${process.env.BENCH_CPU??0}/cpufreq/scaling_governor`),
+  clientScheduler:command('chrt',['-p',String(process.pid)]),requireNormalScheduler:process.env.REQUIRE_NORMAL_SCHEDULER==='1',
+  clientExecutable:process.execPath,nodeLoader:process.env.BENCH_NODE_LOADER??process.env.WORKERD_LOADER??null,
+  governor:file(`/sys/devices/system/cpu/cpu${(process.env.BENCH_CPU??'0').split(',')[0]}/cpufreq/scaling_governor`),
   git:command('git',['rev-parse','HEAD']),gitStatus:command('git',['status','--short']),
   complete:false,config:{rounds,minSamples,seconds,concurrency,warmups,warmupSeconds,selected,cases:chosen.map(c=>c.name)},
   files:Object.fromEntries(['js','rust','scripts'].flatMap(dir=>readdirSync(dir).filter(f=>/\.(js|mjs|rs|sh)$/.test(f)).map(f=>`${dir}/${f}`)).concat(['Cargo.toml','Cargo.lock','rust-toolchain.toml','package.json','package-lock.json']).map(f=>[f,hash(readFileSync(f))])),
   wasm:Object.fromEntries(readdirSync('build').filter(f=>f.endsWith('.wasm')).map(f=>{const b=readFileSync(`build/${f}`);return [f,{bytes:b.length,gzipBytes:gzipSync(b).length,sha256:hash(b)}];}))};
+meta.configFiles=Object.fromEntries(selected.map(v=>[`build/${v}.capnp`,hash(readFileSync(`build/${v}.capnp`))]));
 const oracle=createKernels('baseline');
 const fixtures=chosen.map(c=>({...c,inputs:Array.from({length:c.path.includes('origin')?1:4},(_,i)=>{
   const {s,bytes}=fixture(c.path,42+i*97),expected=Buffer.from(oracle[s.kind](bytes,...s.args));
@@ -63,18 +66,29 @@ try {
           const warmupStart=performance.now();
           for(let i=0;i<warmups || performance.now()-warmupStart < warmupSeconds*1000;i++)await invoke(c,i);
           const samples=[],before=procStats(runtime.child.pid),begin=performance.now();
+          const clientBefore=procStats(process.pid);
+          if(process.env.REQUIRE_NORMAL_SCHEDULER==='1') {
+            assert.equal(before?.schedulerPolicy,0,'workerd must use SCHED_OTHER');
+            assert.equal(clientBefore?.schedulerPolicy,0,'client must use SCHED_OTHER');
+          }
           let next=0;
           await Promise.all(Array.from({length:concurrency},async()=>{
             do {const i=next++;samples.push(await invoke(c,i));}
             while(next<minSamples||performance.now()-begin<seconds*1000);
           }));
           const elapsedMs=performance.now()-begin,after=procStats(runtime.child.pid);
+          const clientAfter=procStats(process.pid);
+          if(process.env.REQUIRE_NORMAL_SCHEDULER==='1') {
+            assert.equal(after?.schedulerPolicy,0,'workerd scheduling changed during block');
+            assert.equal(clientAfter?.schedulerPolicy,0,'client scheduling changed during block');
+          }
           const health=JSON.parse((await call('/health',null,'GET')).bytes);
           const block={round,variant,case:c.name,concurrency,samples,elapsedMs,requests:samples.length,
             p50:percentile(samples,.50),p95:percentile(samples,.95),p99:percentile(samples,.99),
             rps:samples.length*1000/elapsedMs,cpuMs:before&&after?(after.cpuTicks-before.cpuTicks)*1000/clockTicks:null,
             processRssKB:after?.rssKB,processPeakRssKB:after?.peakRssKB,scratchBytes:health.scratchBytes,
-            processStartupMs:runtime.startupMs,firstInvocationMs:firstMs};
+            processStartupMs:runtime.startupMs,firstInvocationMs:firstMs,
+            scheduling:{serverBefore:before?.schedulerPolicy,serverAfter:after?.schedulerPolicy,clientBefore:clientBefore?.schedulerPolicy,clientAfter:clientAfter?.schedulerPolicy,serverAffinity:after?.affinity}};
           results.blocks.push(block);save();
           console.log(`r${round+1} ${variant.padEnd(13)} ${c.name.padEnd(13)} p50 ${block.p50.toFixed(3)}ms p95 ${block.p95.toFixed(3)}ms ${block.rps.toFixed(1)} req/s CPU ${(block.cpuMs/block.requests).toFixed(3)}ms/req`);
         }

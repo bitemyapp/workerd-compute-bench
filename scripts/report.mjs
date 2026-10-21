@@ -5,9 +5,13 @@ const median=a=>{a=[...a].sort((a,b)=>a-b);const m=a.length>>1;return a.length%2
 function load(p) {
   const r=read(p);assert.equal(r.meta.complete,true,p);
   assert.equal(r.meta.diagnosticTrace,false,p);
+  assert.equal(r.meta.requireNormalScheduler,true,p);
   const c=r.meta.config;
   assert.equal(r.blocks.length,c.rounds*c.selected.length*c.cases.length,p);
-  for(const b of r.blocks)assert.equal(b.requests,b.samples.length);
+  for(const b of r.blocks){
+    assert.equal(b.requests,b.samples.length);
+    for(const key of ['serverBefore','serverAfter','clientBefore','clientAfter'])assert.equal(b.scheduling[key],0,p);
+  }
   return r;
 }
 const main=load('results/final-sequential.json'),parallel=load('results/final-concurrency4.json'),base=load('results/final-baselines.json');
@@ -26,7 +30,7 @@ text+='\n'+detail(main);
 text+='\nThe transfer controls use the same payload and response sizes as the large compute cases, with no compute kernel. They help reveal transport overhead; subtracting their medians would not be an exact isolated-kernel measurement. `image-io` includes a real local origin fetch delayed by a 10 ms timer.\n\n## Concurrent requests\n\nFour closed-loop clients share one workerd process and one isolate. CPU kernels remain single-threaded; queueing affects latency. This is achieved throughput at concurrency four, not an open-loop saturation or global capacity claim.\n\n'+detail(parallel);
 text+='\n## Algorithm baselines under the final HTTP reader\n\nThese independent runs use the same BYOB transport for every entrant, separating algorithm choices from the earlier body-reader improvement. Baselines do a direct 25-tap blur and full score sort; optimized versions use separable filtering and bounded top-k selection.\n\n'+detail(base);
 text+='\n## Optimization experiments retained\n\nEach table uses its own experiment, host state, and source hashes. Compare variants within an experiment; absolute timings across experiments can drift. Early experiments used shorter warm-ups. The final runs above use the final code and longer warm-ups.\n';
-for(const file of ['tuning-initial.json','tuning-simd-unroll.json','tuning-body-reader.json','tuning-final-kernels.json','tuning-js-fast.json','tuning-scratch-growth.json','tuning-split-passes.json','tuning-vector-phases.json','tuning-flat-loops.json','tuning-prime.json']){
+for(const file of ['tuning-initial.json','tuning-simd-unroll.json','tuning-body-reader.json','tuning-final-kernels.json','tuning-js-fast.json','tuning-scratch-growth.json','tuning-split-passes.json','tuning-vector-phases.json','tuning-flat-loops.json','tuning-prime.json','tuning-normal-scheduler.json']){
   const r=read(`results/${file}`);
   if(r.meta.complete===false)throw new Error(`Incomplete experiment ${file}`);
   text+=`\n### ${file}\n\n| Variant | Workload | Median round p50 ms |\n|---|---|---:|\n`;
@@ -34,6 +38,7 @@ for(const file of ['tuning-initial.json','tuning-simd-unroll.json','tuning-body-
 }
 text+='\nThe final JavaScript entry loads only its small dedicated hot kernels; the experimental branches and generated dot-product code are excluded. Rust uses explicit image SIMD and SIMD dot products, `opt-level=3`, LTO, one codegen unit, aborting panics, and Binaryen `-O3`. More aggressive dot unrolling did not establish a consistent end-to-end benefit. The size-first Rust profile was slower on image processing. The initial CPU profiles revealed body-reading overhead; both implementations received the same bounded BYOB improvement. Optimization remains hardware/workload dependent.\n';
 text+='\nMixed-size runs exposed severe JavaScript phase-transition regressions. [Before](results/deopt-before.log) and [after](results/deopt-after.log) diagnostic traces show that splitting image phases removed repeated Maglev deoptimizations in that diagnostic and allowed TurboFan optimization. The final `js-flat` variant also separates vector scoring/selection and flattens the image loops, computing and then clearing unused border values. Maximum scratch preallocation and tiny startup priming did not establish consistent improvements, so they were rejected. Fresh-process timing still varies substantially: the final tables include every round and all outliers rather than promising complete JIT stability. The [mixed-workload trace](results/trace-mixed.log) is diagnostic only; tracing changes scheduling and its timings are excluded. Diagnostic V8 flags are absent from the final runs. `mixed-size-regression.json` and `search-phase-regression.json` are interrupted investigative runs, not final results. `incomplete-order-run.json` was interrupted when an audit found the two-entrant order was not counterbalanced; the final scheduler is tested and corrected.\n';
+text+='\nScheduler audit: directly executed Node was automatically demoted to Linux SCHED_IDLE/nice 16 on this workstation, and its later children inherited that policy. The final launcher runs the same Node binary through the glibc loader and checks SCHED_OTHER (policy 0) for both client and workerd before and after every block. Earlier experiments predate that control and are exploratory, not fair final latency estimates. `idle-scheduler-run.json` and `tuning-normal-rejected.json` are interrupted and excluded; the latter also confirmed severe regressions in the rejected monolithic JS variant at normal priority. The final workerd affinity permits two P-cores so background V8 compiler/GC threads are not artificially confined with the single application isolate to one core; client affinity is separate. Application kernels remain single-threaded. No other processes or global scheduler settings were changed.\n';
 text+='\n## Footprint and startup observations\n\n| Wasm artifact | Raw bytes | gzip bytes |\n|---|---:|---:|\n';
 for(const [name,m] of Object.entries(main.meta.wasm))text+=`| ${name} | ${m.bytes} | ${m.gzipBytes} |\n`;
 text+='\n| Entrant | Maximum observed scratch/linear memory MiB | Peak process RSS MiB | Median process launch-to-health ms |\n|---|---:|---:|---:|\n';
