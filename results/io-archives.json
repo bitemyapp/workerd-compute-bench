@@ -1,0 +1,20 @@
+{
+  "results/io-closed.json.gz": {
+    "rawBytes": 301850766,
+    "rawSha256": "723c811ab8c5b06f1313a5709ec0832b015403598608f3bb7af577db24ea1fda",
+    "gzipBytes": 33571493,
+    "gzipSha256": "8549c632c5eb14ba5fe7c378f430f6f6c77997245aba875cbeae462ab5873a81"
+  },
+  "results/io-open.json.gz": {
+    "rawBytes": 49245155,
+    "rawSha256": "fc75fecb63e0b454664ad2919ce96348250570d2ab5b40627f9fc5e7ff35003e",
+    "gzipBytes": 7438437,
+    "gzipSha256": "d4bd436a77cf096649122ce3b0e62d615baf0f65cd3e7b11b2b1b77e329f9164"
+  },
+  "results/io-origin.json.gz": {
+    "rawBytes": 111692501,
+    "rawSha256": "d876aefc681daa329e193bbac3c0a393c039766109b1878c0d9f31a221f88922",
+    "gzipBytes": 11002032,
+    "gzipSha256": "44c02da3e73beea6d37a5f3729702a272882ce2cd923e2780aa48d8015144df8"
+  }
+}

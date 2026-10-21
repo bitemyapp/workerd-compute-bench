@@ -1,0 +1,33 @@
+{
+  "suites": {
+    "closed": {
+      "blocks": 192,
+      "samples": 1573875,
+      "successes": 265681,
+      "rejections": 1308194,
+      "dropped": 0,
+      "sourceCommit": "16c95614c21b7e76269481871e46d9fa18e79e72"
+    },
+    "open": {
+      "blocks": 48,
+      "samples": 263761,
+      "successes": 144158,
+      "rejections": 119603,
+      "dropped": 239,
+      "sourceCommit": "16c95614c21b7e76269481871e46d9fa18e79e72"
+    },
+    "origin": {
+      "blocks": 18,
+      "samples": 585707,
+      "successes": 585707,
+      "rejections": 0,
+      "dropped": 0,
+      "sourceCommit": "16c95614c21b7e76269481871e46d9fa18e79e72"
+    }
+  },
+  "totalSamples": 2423343,
+  "validatedSuccesses": 995546,
+  "expectedRejections": 1427797,
+  "droppedOffers": 239,
+  "passed": true
+}

@@ -1,6 +1,8 @@
 import {readFileSync,writeFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
-const datasets=Object.fromEntries(['closed','open','origin'].map(mode=>[mode,JSON.parse(readFileSync(`results/io-${mode}.json`))]));
+import {archiveResults,readResults} from './io-archive.mjs';
+await archiveResults();
+const datasets=Object.fromEntries(['closed','open','origin'].map(mode=>[mode,readResults(mode)]));
 for(const [mode,d]of Object.entries(datasets)){assert(d.meta.complete,`${mode} incomplete`);assert(d.blocks.length);}
 const median=values=>{const a=[...values].sort((a,b)=>a-b);return a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;};
 const med=(blocks,f)=>median(blocks.map(f));
@@ -15,7 +17,7 @@ for(const variant of datasets.closed.meta.config.variants)for(const p of dataset
 const lines=['# I/O concurrency results','',`Measured ${datasets.closed.meta.date} through ${datasets.origin.meta.finished}. CPU: ${datasets.closed.meta.cpu}; ${datasets.closed.meta.workerd}; Node ${datasets.closed.meta.node}. Source commit: \`${datasets.closed.meta.git}\`. Each application gets CPUs ${datasets.closed.meta.affinity.app}; the native Tokio origin gets CPUs ${datasets.closed.meta.affinity.origin}; client: ${datasets.closed.meta.affinity.client}.`,'',
 'These are local, workload-specific measurements. JavaScript and Rust/Wasm each run in one workerd isolate. Native Tokio runs outside workerd and uses one or two executor threads as labeled. All four implementations perform equivalent HTTP fan-out and checksum aggregation; both Rust implementations share the same async core. Tokio synchronization runs inside the Wasm app, while workerd supplies its event loop and fetch.','',
 `Statistics are medians of ${datasets.closed.meta.config.rounds} per-round statistics, with fresh application processes, ${datasets.closed.meta.config.warmup}s warm-up at each tested load and ${datasets.closed.meta.config.seconds}s measured per block. Every successful response was independently byte-validated. Origin byte/request totals, idle state, capacity recovery, artifact hashes and normal process scheduling were checked. No outliers were removed. See [io/README.md](io/README.md) for protocols, resource limits and reproduction.`, '',
-'## Highest measured goodput without rejection','',
+'## Closed-loop goodput without rejection','',
 'For each workload/entrant, this selects the highest median among tested client concurrencies whose **every round** had zero rejection or dropped offers. It is a point in this finite sweep, not proof of a global throughput maximum.','',
 '| Entrant | Workload | Clients | Successful aggregates/s | MiB/s from origin | p50 ms | p95 ms | App CPU ms/success |',
 '|---|---|---:|---:|---:|---:|---:|---:|'];
@@ -32,6 +34,14 @@ lines.push('','## Direct origin control','','These requests bypass the applicati
 '| Profile | Clients | Shards/s | MiB/s | p95 ms | Origin CPU ms/shard | Client CPU ms/shard |',
 '|---|---:|---:|---:|---:|---:|---:|');
 for(const g of groups(datasets.origin.blocks).sort((a,b)=>a[0].profile.localeCompare(b[0].profile)||a[0].load-b[0].load)){const b=g[0];lines.push(`| ${b.profile} | ${b.load} | ${fmt(med(g,b=>b.goodput))} | ${fmt(med(g,b=>b.mibPerSec))} | ${fmt(med(g,b=>b.p95),2)} | ${fmt(med(g,b=>b.cpuMs.origin/b.successes),3)} | ${fmt(med(g,b=>b.cpuMs.client/b.successes),3)} |`);}
+const smallControls=groups(datasets.origin.blocks).filter(g=>g[0].profile==='fanout6');
+const nativeOpen=groups(datasets.open.blocks).filter(g=>g[0].variant.startsWith('tokio-')&&g[0].profile==='fanout6');
+const streamControls=groups(datasets.origin.blocks).filter(g=>g[0].profile==='stream64k');
+if(smallControls.length&&nativeOpen.length)lines.push('',`The highest median small-shard control is ${fmt(Math.max(...smallControls.map(g=>med(g,b=>b.goodput))),0)} shards/s; the highest median native Tokio open-loop result consumes ${fmt(12*Math.max(...nativeOpen.map(g=>med(g,b=>b.goodput))),0)} shards/s. Compare these rates before interpreting native saturation: the origin is not an unlimited dependency.`);
+if(streamControls.length)lines.push('',`The direct streaming control's highest median Node client CPU usage is ${fmt(Math.max(...streamControls.map(g=>med(g,b=>100*b.cpuMs.client/b.elapsedMs))),1)}% of one core. Near 100%, this control becomes client-limited and cannot establish the origin's intrinsic ceiling.`);
+const jsStream=closed.find(g=>g[0].variant==='js-io'&&g[0].profile==='stream64k'&&g[0].load===32);
+if(jsStream)lines.push('',`JavaScript streaming at 32 clients ranges from ${fmt(Math.min(...jsStream.map(b=>b.goodput)),0)} to ${fmt(Math.max(...jsStream.map(b=>b.goodput)),0)} aggregates/s. The slower rounds are retained. These measurements do not diagnose variation as a particular JIT, GC, or scheduling effect.`);
+lines.push('','Low-concurrency serial blocks contain few observations; their tail quantiles need longer runs for reliable capacity planning.');
 lines.push('','## Memory and interpretation','','| Entrant | Maximum process RSS MiB | Maximum process HWM MiB | Maximum Wasm linear memory MiB |','|---|---:|---:|---:|');
 for(const variant of datasets.closed.meta.config.variants){const b=[...datasets.closed.blocks,...datasets.open.blocks].filter(b=>b.variant===variant);lines.push(`| ${variant} | ${fmt(Math.max(...b.map(b=>b.after.app.rssKB))/1024)} | ${fmt(Math.max(...b.map(b=>b.after.app.peakRssKB))/1024)} | ${variant==='rust-io'?fmt(Math.max(...b.map(b=>b.application.wasmMemoryBytes))/1048576):'—'} |`);}
 lines.push('','RSS includes the whole process (V8/compiler/runtime code and native allocations), not just Worker isolate memory. Application body reservations cap at 32 MiB; Wasm linear memory caps at 64 MiB. Neither alone proves total hosted isolate memory compliance. Native two-thread throughput uses two application cores; workerd still has one application execution thread even though its runtime can use background threads.','',
@@ -40,7 +50,9 @@ lines.push('','RSS includes the whole process (V8/compiler/runtime code and nati
 'The first prototype’s cross-request promise queue failed workerd liveness detection under load; final admission reserves capacity synchronously. TCP_NODELAY was also necessary to avoid a delayed-ACK/Nagle artifact in the controlled origin. Both changes are included in every final entrant.','',
 '## Artifacts','',
 '- [Correctness and overload validation](results/io-validation.txt)',
-'- [Closed-loop raw samples and provenance](results/io-closed.json)',
-'- [Fixed-arrival raw samples and provenance](results/io-open.json)',
-'- [Direct-origin raw samples and provenance](results/io-origin.json)','');
+'- [Closed-loop raw samples and provenance, gzip JSON](results/io-closed.json.gz)',
+'- [Fixed-arrival raw samples and provenance, gzip JSON](results/io-open.json.gz)',
+'- [Direct-origin raw samples and provenance, gzip JSON](results/io-origin.json.gz)',
+'- [Archive byte counts and SHA-256 hashes](results/io-archives.json)',
+'- [Final integrity audit](results/io-audit.json)','');
 writeFileSync('IO-RESULTS.md',lines.join('\n'));console.log('Wrote IO-RESULTS.md');
