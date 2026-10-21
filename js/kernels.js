@@ -1,10 +1,13 @@
 // Integer math deliberately makes all implementations bit-identical.
+import {dot128,dot256} from './dot-generated.js';
+import {imageLinear} from './image-linear.js';
 const weights = [1, 4, 6, 4, 1];
 export function createKernels(variant = 'optimized') {
   let temp = new Uint16Array(0), blurred = new Uint8Array(0);
   function image(input, w, h) {
     const n = w * h;
     if (temp.length < n) { temp = new Uint16Array(n); blurred = new Uint8Array(n); }
+    if (variant === 'linear') return imageLinear(input,w,h,temp,blurred);
     blurred.fill(0, 0, n);
     const out = new Uint8Array(n);
     if (variant === 'baseline') {
@@ -43,7 +46,18 @@ export function createKernels(variant = 'optimized') {
       for (let i = 0; i < n; i++) {
         const base = i*d;
         let score = 0;
-        if (variant === 'baseline' || variant === 'scalar') {
+        if (variant === 'specialized' && (d===128 || d===256)) {
+          score = d===128 ? dot128(a,base,query) : dot256(a,base,query);
+        } else if (variant === 'unrolled') {
+          let s0=0,s1=0,s2=0,s3=0;
+          for(let j=0;j<d;j+=16) {
+            s0+=a[base+j]*a[query+j]+a[base+j+4]*a[query+j+4]+a[base+j+8]*a[query+j+8]+a[base+j+12]*a[query+j+12];
+            s1+=a[base+j+1]*a[query+j+1]+a[base+j+5]*a[query+j+5]+a[base+j+9]*a[query+j+9]+a[base+j+13]*a[query+j+13];
+            s2+=a[base+j+2]*a[query+j+2]+a[base+j+6]*a[query+j+6]+a[base+j+10]*a[query+j+10]+a[base+j+14]*a[query+j+14];
+            s3+=a[base+j+3]*a[query+j+3]+a[base+j+7]*a[query+j+7]+a[base+j+11]*a[query+j+11]+a[base+j+15]*a[query+j+15];
+          }
+          score=s0+s1+s2+s3;
+        } else if (variant === 'baseline' || variant === 'scalar') {
           for (let j = 0; j < d; j++) score += a[base+j] * a[query+j];
         } else {
           let s0=0, s1=0, s2=0, s3=0;
@@ -68,5 +82,5 @@ export function createKernels(variant = 'optimized') {
     }
     return out;
   }
-  return { image, search, memoryBytes: () => temp.byteLength + blurred.byteLength };
+  return { image, search, transfer:(_bytes,n)=>new Uint8Array(n), noop:()=>new TextEncoder().encode('ok'), memoryBytes: () => temp.byteLength + blurred.byteLength };
 }

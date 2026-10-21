@@ -17,6 +17,7 @@ export function call(path,bytes,method='POST') {
 }
 export async function start(variant) {
   const args=['scripts/workerd.sh','serve',`build/${variant}.capnp`];
+  if(process.env.PROFILE) args.push('--inspector-addr','127.0.0.1:9229');
   const child=process.env.BENCH_CPU ? spawn('taskset',['-c',process.env.BENCH_CPU,'bash',...args],{stdio:['ignore','pipe','pipe']}) : spawn('bash',args,{stdio:['ignore','pipe','pipe']});
   let log=''; child.stdout.on('data',c=>log+=c); child.stderr.on('data',c=>log+=c);
   const begin=performance.now();
@@ -30,7 +31,12 @@ export async function start(variant) {
   } catch(e) { child.kill(); throw e; }
   return {child,startupMs:performance.now()-begin,log:()=>log,async stop(){
     agent.destroy();
-    if(child.exitCode===null) { const done=once(child,'exit'); child.kill('SIGTERM'); await done; }
+    if(child.exitCode===null) {
+      const done=once(child,'exit'); child.kill('SIGTERM');
+      // Inspector sessions can keep workerd's graceful shutdown alive.
+      const timeout=setTimeout(()=>child.kill('SIGKILL'),3000);
+      await done;clearTimeout(timeout);
+    }
     if(log.trim()) console.error(log.trim());
   }};
 }

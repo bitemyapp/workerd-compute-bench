@@ -10,6 +10,8 @@ crate-type = ["cdylib"]
 
 [features]
 simd = []
+manual = ["simd"]
+unroll = ["manual"]
 
 [profile.release]
 opt-level = 3

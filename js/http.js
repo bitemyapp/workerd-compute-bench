@@ -5,6 +5,8 @@ export function spec(url) {
     if (!Number.isInteger(n) || n < min || n > max) throw new Error(`invalid ${name}`);
     return n;
   }
+  if (u.pathname === '/noop') return {kind:'noop',args:[],bytes:0};
+  if (u.pathname === '/transfer') return {kind:'transfer',args:[integer('out',0,0,4*1024*1024)],bytes:integer('bytes',0,0,8*1024*1024)};
   if (u.pathname === '/image') {
     const w=integer('w',1024,7,2048), h=integer('h',1024,7,2048);
     return { kind:'image', args:[w,h], bytes:w*h };
@@ -18,8 +20,21 @@ export function spec(url) {
   throw new Error('unknown endpoint');
 }
 
-async function readExact(body, size) {
+async function readExact(body, size, mode) {
   if (!body) throw new Error('missing body');
+  if (mode !== 'chunked') {
+    let reader;
+    try { reader=body.getReader({mode:'byob'}); } catch { /* Node adapter may supply a default stream. */ }
+    if (reader?.readAtLeast) {
+      try {
+        // Asking for one extra byte validates EOF as well as bounding allocation.
+        const {value}=await reader.readAtLeast(size+1,new Uint8Array(size+1));
+        if (value?.byteLength !== size) throw new Error('body length mismatch');
+        return value;
+      } finally { await reader.cancel().catch(()=>{});reader.releaseLock(); }
+    }
+    reader?.releaseLock();
+  }
   const out = new Uint8Array(size), reader = body.getReader();
   let at=0;
   try {
@@ -38,7 +53,7 @@ export function handler(kernels) {
   let active=0, reserved=0;
   return async function fetch(request, env={}) {
     const u = new URL(request.url);
-    if (u.pathname === '/health') return Response.json({ok:true, scratchBytes:kernels.memoryBytes()});
+    if (u.pathname === '/health') return Response.json({ok:true, scratchBytes:kernels.memoryBytes(),activeRequests:active,reservedBytes:reserved});
     if (u.pathname === '/noop') return new Response('ok');
     let s;
     try { s=spec(request.url); } catch(e) { return new Response(e.message,{status:400}); }
@@ -54,9 +69,9 @@ export function handler(kernels) {
         if (!r.ok) return new Response('origin failure',{status:502});
         body=r.body;
       }
-      const bytes=await readExact(body,s.bytes);
+      const bytes=await readExact(body,s.bytes,env.READER);
       // Synchronous compute and owned output: shared scratch never spans an await.
-      const output=kernels[s.kind](bytes,...s.args);
+      const output=s.kind==='transfer' ? new Uint8Array(s.args[0]) : kernels[s.kind](bytes,...s.args);
       return new Response(output,{headers:{'content-type':'application/octet-stream'}});
     } catch(e) { return new Response(e.message,{status:400}); }
     finally { active--; reserved-=s.bytes; }

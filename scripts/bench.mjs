@@ -8,25 +8,28 @@ import {createKernels} from '../js/kernels.js';
 import {cases,fixture} from './fixtures.mjs';
 import {variants} from './config.mjs';
 import {call,start,origin,agent,procStats,clockTicks} from './runtime.mjs';
+import {verifyBuild} from './build-manifest.mjs';
 
-const selected=(process.env.VARIANTS??variants.join(',')).split(',');
+const selected=(process.env.VARIANTS??'js-fast,rust-manual-o3').split(',');
 const chosen=cases.filter(c=>!process.env.CASES||process.env.CASES.split(',').includes(c.name));
 const rounds=Number(process.env.ROUNDS??3), minSamples=Number(process.env.SAMPLES??80);
 const seconds=Number(process.env.SECONDS??1), concurrency=Number(process.env.CONCURRENCY??1);
-const warmups=Number(process.env.WARMUPS??30), output=process.env.OUTPUT??'results/benchmark.json';
+const warmups=Number(process.env.WARMUPS??50), warmupSeconds=Number(process.env.WARMUP_SECONDS??1), output=process.env.OUTPUT??'results/benchmark.json';
 assert(selected.every(v=>variants.includes(v)));assert(chosen.length>0);
 assert(Number.isInteger(concurrency)&&concurrency>=1&&concurrency<=4);
+assert(Number.isInteger(rounds)&&rounds>0&&Number.isInteger(minSamples)&&minSamples>0&&seconds>0);
+assert(Number.isInteger(warmups)&&warmups>0&&warmupSeconds>=0);
 const hash=b=>createHash('sha256').update(b).digest('hex');
 function command(cmd,args=[]) {try{return execFileSync(cmd,args,{encoding:'utf8'}).trim();}catch{return null;}}
 function file(path){try{return readFileSync(path,'utf8').trim();}catch{return null;}}
-const meta={date:new Date().toISOString(),node:process.version,rust:command('rustc',['--version']),
+const meta={build:verifyBuild(),date:new Date().toISOString(),node:process.version,rust:command('rustc',['--version']),
   workerd:command('bash',['scripts/workerd.sh','--version']),binaryen:command('wasm-opt',['--version']),
   kernel:os.release(),platform:os.platform(),arch:os.arch(),cpu:os.cpus().map(c=>({model:c.model,mhz:c.speed})),
   lscpu:command('lscpu',['-J']),loadStart:os.loadavg(),serverCPU:process.env.BENCH_CPU??null,
   clientAffinity:command('taskset',['-pc',String(process.pid)]),clockTicks,
   governor:file(`/sys/devices/system/cpu/cpu${process.env.BENCH_CPU??0}/cpufreq/scaling_governor`),
   git:command('git',['rev-parse','HEAD']),gitStatus:command('git',['status','--short']),
-  config:{rounds,minSamples,seconds,concurrency,warmups,selected,cases:chosen.map(c=>c.name)},
+  complete:false,config:{rounds,minSamples,seconds,concurrency,warmups,warmupSeconds,selected,cases:chosen.map(c=>c.name)},
   files:Object.fromEntries(['js','rust','scripts'].flatMap(dir=>readdirSync(dir).filter(f=>/\.(js|mjs|rs|sh)$/.test(f)).map(f=>`${dir}/${f}`)).concat(['Cargo.toml','Cargo.lock','rust-toolchain.toml','package.json','package-lock.json']).map(f=>[f,hash(readFileSync(f))])),
   wasm:Object.fromEntries(readdirSync('build').filter(f=>f.endsWith('.wasm')).map(f=>{const b=readFileSync(`build/${f}`);return [f,{bytes:b.length,gzipBytes:gzipSync(b).length,sha256:hash(b)}];}))};
 const oracle=createKernels('baseline');
@@ -57,7 +60,8 @@ try {
       try {
         for(const c of fixtures) {
           const firstMs=await invoke(c,0);
-          for(let i=0;i<warmups;i++)await invoke(c,i);
+          const warmupStart=performance.now();
+          for(let i=0;i<warmups || performance.now()-warmupStart < warmupSeconds*1000;i++)await invoke(c,i);
           const samples=[],before=procStats(runtime.child.pid),begin=performance.now();
           let next=0;
           await Promise.all(Array.from({length:concurrency},async()=>{
@@ -77,6 +81,9 @@ try {
       } finally {await runtime.stop();}
     }
   }
+  results.meta.complete=true;
+} catch(e) {
+  results.meta.error=e.stack;throw e;
 } finally {
   results.meta.loadEnd=os.loadavg();results.meta.finished=new Date().toISOString();save();
   originServer.closeAllConnections();await new Promise(r=>originServer.close(r));agent.destroy();

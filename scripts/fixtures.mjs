@@ -14,6 +14,9 @@ export function fixture(path, seed=42) {
   return {s,bytes};
 }
 export const cases = [
+  {name:'noop',path:'/noop'},
+  {name:'transfer-image',path:'/transfer?bytes=1048576&out=1048576'},
+  {name:'transfer-search',path:'/transfer?bytes=4195328&out=640'},
   {name:'image-256',path:'/image?w=256&h=256'},
   {name:'image-1024',path:'/image?w=1024&h=1024'},
   {name:'search-small',path:'/search?n=1024&d=128&q=4&k=10'},
