@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-21T09:02:23.231Z",
+  "result": "npm ci and full rebuild reproduced the tested workerd binary and every Wasm artifact byte-for-byte",
+  "sha256": {
+    "node_modules/workerd/bin/workerd": "2f225cb5a086cb2cf35e4860b224239f3307c795ed139fc12fd4238100aade42",
+    "build/manual-o3.wasm": "cf7bfc97ce61389a51d2233373522deb55bc3117f3167d63c202a0f0bdd0a104",
+    "build/manual.wasm": "65a58ab0f41f9da977133d840e0d7db2c5736c2432e0df5747a0b23827a4aeeb",
+    "build/scalar.wasm": "5f736190b80c5d390a0aa591239ac1bb4b96e78c06a224c58515cb652df4c719",
+    "build/simd-o3.wasm": "6bf212358a6feadd2be073c351bcb666ea46138e16862c886e2e1fd77d00d0c7",
+    "build/simd-oz.wasm": "ef1d211d5eb0109c65f2ececf323535da08886cf4fe2d5638d5c6ed801f88a1e",
+    "build/simd.wasm": "3a1e1e67ca957199fc1fad862c1928c99687f6356cd44b181e4c102255d8095e",
+    "build/small.wasm": "28808c1a05aee4acb05d83a355725037c4ba758af1dd28974873da31c62de222",
+    "build/unroll-o3.wasm": "7a1a89ec61837c185a1c4606a55d62df193f240a9829ba0727847b4a77d395c3",
+    "build/unroll.wasm": "cc897a003ded31065ce026409b535ade57349072bc0158d41106fdeb0e0b3f08"
+  }
+}

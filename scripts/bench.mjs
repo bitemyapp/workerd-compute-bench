@@ -50,7 +50,7 @@ async function invoke(c,index) {
   const f=c.inputs[index%c.inputs.length],t=performance.now();
   const r=await call(c.path,c.path.includes('origin')?null:f.bytes);
   const ms=performance.now()-t;
-  assert.equal(r.status,200,`${c.name}: ${r.bytes.toString().slice(0,100)}`);
+  if(r.status!==200)throw new Error(`${c.name}: HTTP ${r.status}: ${r.bytes.subarray(0,100).toString()}`);
   assert(r.bytes.equals(f.expected),`incorrect result: ${c.name}`);
   return ms;
 }
@@ -70,6 +70,8 @@ try {
           if(process.env.REQUIRE_NORMAL_SCHEDULER==='1') {
             assert.equal(before?.schedulerPolicy,0,'workerd must use SCHED_OTHER');
             assert.equal(clientBefore?.schedulerPolicy,0,'client must use SCHED_OTHER');
+            assert.equal(before?.nice,0,'workerd must use nice 0');
+            assert.equal(clientBefore?.nice,0,'client must use nice 0');
           }
           let next=0;
           await Promise.all(Array.from({length:concurrency},async()=>{
@@ -81,6 +83,8 @@ try {
           if(process.env.REQUIRE_NORMAL_SCHEDULER==='1') {
             assert.equal(after?.schedulerPolicy,0,'workerd scheduling changed during block');
             assert.equal(clientAfter?.schedulerPolicy,0,'client scheduling changed during block');
+            assert.equal(after?.nice,0,'workerd niceness changed during block');
+            assert.equal(clientAfter?.nice,0,'client niceness changed during block');
           }
           const health=JSON.parse((await call('/health',null,'GET')).bytes);
           const block={round,variant,case:c.name,concurrency,samples,elapsedMs,requests:samples.length,
@@ -88,7 +92,7 @@ try {
             rps:samples.length*1000/elapsedMs,cpuMs:before&&after?(after.cpuTicks-before.cpuTicks)*1000/clockTicks:null,
             processRssKB:after?.rssKB,processPeakRssKB:after?.peakRssKB,scratchBytes:health.scratchBytes,
             processStartupMs:runtime.startupMs,firstInvocationMs:firstMs,
-            scheduling:{serverBefore:before?.schedulerPolicy,serverAfter:after?.schedulerPolicy,clientBefore:clientBefore?.schedulerPolicy,clientAfter:clientAfter?.schedulerPolicy,serverAffinity:after?.affinity}};
+            scheduling:{serverBefore:before?.schedulerPolicy,serverAfter:after?.schedulerPolicy,clientBefore:clientBefore?.schedulerPolicy,clientAfter:clientAfter?.schedulerPolicy,serverNiceBefore:before?.nice,serverNiceAfter:after?.nice,clientNiceBefore:clientBefore?.nice,clientNiceAfter:clientAfter?.nice,serverAffinity:after?.affinity}};
           results.blocks.push(block);save();
           console.log(`r${round+1} ${variant.padEnd(13)} ${c.name.padEnd(13)} p50 ${block.p50.toFixed(3)}ms p95 ${block.p95.toFixed(3)}ms ${block.rps.toFixed(1)} req/s CPU ${(block.cpuMs/block.requests).toFixed(3)}ms/req`);
         }
